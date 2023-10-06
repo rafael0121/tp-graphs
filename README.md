@@ -6,7 +6,6 @@ Grupo:
 
 * Arthur Lanna
 * Marcus Leandro
-* Samuel Rocha
 * Rafael Ramos
 
 
