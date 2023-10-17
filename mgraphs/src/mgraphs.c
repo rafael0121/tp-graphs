@@ -88,3 +88,5 @@ unsigned vertex_degree (Graph *graph, unsigned id){
 
 	return degree;
 }
+
+

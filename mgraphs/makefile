@@ -11,7 +11,7 @@ SRC = $(wildcard $(SRCDIR)/*.c)
 TES = $(wildcard $(TESDIR)/*.c)
 
 
-mgraphs: compiletest
+all: compiletest
 
 #Create library and bin folders
 createfolders: clean
