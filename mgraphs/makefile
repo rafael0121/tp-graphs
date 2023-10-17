@@ -24,11 +24,11 @@ precompilelibrarys: createfolders
 
 #Ar in a static library 
 createstaticlibrary: precompilelibrarys 
-	ar rcs $(LIBDIR)/libuseful.a $(wildcard $(CURDIR)/*.o) 
+	ar rcs $(LIBDIR)/libmgraphs.a $(wildcard $(CURDIR)/*.o) 
 
 #Compile tests
 compiletest: createstaticlibrary 
-	gcc -Wall $(TES) -o $(BINDIR)/main.out -luseful -I $(INCDIR) -L $(LIBDIR)
+	gcc -Wall $(TES) -o $(BINDIR)/main.out -lmgraphs -I $(INCDIR) -L $(LIBDIR)
 
 clean:
 	rm -rf $(BINDIR)
