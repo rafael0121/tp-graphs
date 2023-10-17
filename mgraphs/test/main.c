@@ -1,5 +1,7 @@
 #include <mgraphs.h>
-int main(){
 
-	ggraph *graph = create_graph(false);
+int main(){
+	int n = 10;
+	ggraph *graph = create_graph(false, n);
+	
 }
