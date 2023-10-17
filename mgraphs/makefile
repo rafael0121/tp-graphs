@@ -1,3 +1,7 @@
+# Comando para compilar
+# make clean mgraphs
+
+
 export BINDIR = $(CURDIR)/bin
 export INCDIR = $(CURDIR)/include
 export SRCDIR = $(CURDIR)/src
@@ -17,7 +21,6 @@ createfolders: clean
 #Compile Library
 precompilelibrarys: createfolders
 	gcc -Wall -c -I $(INCDIR) $(SRC)
-
 
 #Ar in a static library 
 createstaticlibrary: precompilelibrarys 
