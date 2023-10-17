@@ -32,3 +32,25 @@ ggraph * create_graph(bool directed, int n){
 
 	return graph;
 }
+
+void edge_insert (ggraph *graph, unsigned id1, unsigned id2, int weight){
+	
+	int edge_pos1 = graph->total_vertex * id1 + id2;
+	int edge_pos2 = graph->total_vertex * id2 + id1;
+	
+	if(graph->directed){
+		graph->edge_array[edge_pos1].connect = 1;
+		graph->edge_array[edge_pos1].weight = 0;
+
+		graph->edge_array[edge_pos2].connect = 1;
+		graph->edge_array[edge_pos2].weight = 0;
+
+	}else{
+		graph->edge_array[edge_pos1].connect = 1;
+		graph->edge_array[edge_pos1].weight = 0;
+
+		graph->edge_array[edge_pos2].connect = 1;
+		graph->edge_array[edge_pos2].weight = 0;
+
+	}
+}
