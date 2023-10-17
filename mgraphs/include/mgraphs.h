@@ -52,7 +52,7 @@ void insert_edge (Graph *, unsigned, unsigned, int); // Insere uma aresta no gra
 void remove_edge (Graph *, unsigned, unsigned); // Remove uma aresta do grafo, recebe o id de dois vértices.
 void save_edge_neighbors (Graph *, unsigned, int *); // Salva o id dos vértices vizinhos do vértice solicitado.
 
-Graph * create_graph (bool, int); // Cria um novo grafo
+Graph * create_graph (bool, unsigned); // Cria um novo grafo
 unsigned get_graph_degree (Graph *); // Retorna o grau do grafo.    
 bool is_graph_connect (Graph *); // Retorna se o grafo é conexo.
 bool is_graph_regular (Graph *); // Retorna se o grafo é regular.
