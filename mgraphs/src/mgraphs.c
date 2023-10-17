@@ -29,4 +29,6 @@ ggraph * create_graph(bool directed, int n){
 		graph->vertex_array[i].id = i;
 		graph->vertex_array[i].obj = NULL;
 	}
+
+	return graph;
 }
