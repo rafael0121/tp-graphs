@@ -8,12 +8,12 @@
  * @param directed Grafo direcionado ou não.
  * @param n Quantidade de vértices a serem criados.
  */
-Graph * create_graph(bool directed, int n){
+Graph * create_graph(bool directed, unsigned vertex_quantity){
 
 	Graph *graph = malloc(sizeof(Graph));
 	
-	graph->total_vertex = n;
-	graph->total_edge = n*n;
+	graph->total_vertex = vertex_quantity;
+	graph->total_edge = vertex_quantity*vertex_quantity;
 	graph->directed = directed;
 	
 	graph->edge_array = malloc(sizeof(Edge) * graph->total_edge);
@@ -23,9 +23,9 @@ Graph * create_graph(bool directed, int n){
 		graph->edge_array[i].weight = 0;
 	}
 	
-	graph->vertex_array = malloc(sizeof(Vertex)*n); 
+	graph->vertex_array = malloc(sizeof(Vertex)*vertex_quantity); 
 
-	for(int i=0; i<n; i++){
+	for(int i=0; i<vertex_quantity; i++){
 		graph->vertex_array[i].id = i;
 		graph->vertex_array[i].obj = NULL;
 	}
@@ -44,14 +44,12 @@ void edge_insert (Graph *graph, unsigned id1, unsigned id2, int weight){
 
 		graph->edge_array[edge_pos2].connect = -1;
 		graph->edge_array[edge_pos2].weight = weight;
-
 	}else{
 		graph->edge_array[edge_pos1].connect = 1;
 		graph->edge_array[edge_pos1].weight = weight;
 
 		graph->edge_array[edge_pos2].connect = 1;
 		graph->edge_array[edge_pos2].weight = weight;
-
 	}
 }
 
@@ -66,16 +64,13 @@ void edge_remove (Graph * graph, unsigned id1, unsigned id2){
 
 		graph->edge_array[edge_pos2].connect = 0;
 		graph->edge_array[edge_pos2].weight = 0;
-
 	}else{
 		graph->edge_array[edge_pos1].connect = 0;
 		graph->edge_array[edge_pos1].weight = 0;
 
 		graph->edge_array[edge_pos2].connect = 0;
 		graph->edge_array[edge_pos2].weight = 0;
-
 	}
-
 }
 
 unsigned vertex_degree (Graph *graph, unsigned id){
