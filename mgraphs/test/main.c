@@ -1,7 +1,7 @@
 #include <mgraphs.h>
 #include <stdio.h>
 
-void print_graph(ggraph *graph){
+void print_graph(Graph *graph){
 
 	printf("\n\n");
 
@@ -22,7 +22,7 @@ void print_graph(ggraph *graph){
 
 int main(){
 	int n =10;
-	ggraph *graph = create_graph(false, n);
+	Graph *graph = create_graph(false, n);
 	
 	edge_insert(graph, 6, 2, 0);
 

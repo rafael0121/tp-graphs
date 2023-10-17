@@ -15,7 +15,7 @@
 	struct{
 		unsigned id; 	  // id Identificador do vértice.
 		void *obj;	  // Objeto armazenado no vértice.
-	}typedef gvertex;
+	}typedef Vertex;
 
 	/**
 	 * @brief Struct arestas.
@@ -24,7 +24,7 @@
 		int connect;	// Informa se os vértices estão conectados 1 = conectado/aresta de saída,
 				// 0 = desconectados e -1 aresta de entrada.
 		int weight;	// Peso do vértice
-	}typedef gedge;
+	}typedef Edge;
 
 	/**
 	 * @brief Struct grafo.
@@ -34,26 +34,26 @@
 		unsigned total_edge;		// Total de arestas na matriz (Incluindo vértices repetidos).
 		    bool directed;		// Se o grafo é direcionado ou não.
 						//
-		   gedge *edge_array;
-		 gvertex *vertex_array;
-	}typedef ggraph;
+		   Edge *edge_array;
+		 Vertex *vertex_array;
+	}typedef Graph;
 
 	//Funções de biblioteca
 	
-	  ggraph * create_graph (bool, int);			
-	    void edge_insert (ggraph *, unsigned, unsigned, int);	// Insere uma aresta no grafo, recebe o id de dois vértices e o peso
+	  Graph * create_graph (bool, int);			
+	    void edge_insert (Graph *, unsigned, unsigned, int);	// Insere uma aresta no grafo, recebe o id de dois vértices e o peso
 									// da aresta.
-	    void edge_remove (ggraph *, unsigned, unsigned);		// Remove uma aresta do grafo, recebe o id de dois vértices.
-	unsigned vertex_degree (ggraph *, unsigned);			// Retorna o grau do vértice, recebe o id do vértice.
-	    void vertex_neigh (ggraph *, unsigned, int *);		// Salva o id dos vértices vizinhos do vértice solicitado.
-	unsigned graph_degree (ggraph *);				// Retorna o grau do grafo.
-	    bool graph_connect (ggraph *);				// Retorna se o grafo é conexo.
-	    bool graph_regular (ggraph *);				// Retorna se o grafo é regular.
-	    bool graph_complete (ggraph *);				// Retorna se o grafo é completo.
-	    void depth_search (ggraph *);				// realiza uma busca em profundidade no grafo.
-	    void breadth_search (ggraph *);				// realiza uma busca em largura no grafo.
-	    bool vertex_path (ggraph *, unsigned, unsigned);		// Retorna se existe um caminho entre 2 vértices.
-	    void ggraph_save(ggraph *);					// Salva o grafo em um arquivo csv padrão Gephi.
+	    void edge_remove (Graph *, unsigned, unsigned);		// Remove uma aresta do grafo, recebe o id de dois vértices.
+	unsigned vertex_degree (Graph *, unsigned);			// Retorna o grau do vértice, recebe o id do vértice.
+	    void vertex_neigh (Graph *, unsigned, int *);		// Salva o id dos vértices vizinhos do vértice solicitado.
+	unsigned graph_degree (Graph *);				// Retorna o grau do grafo.
+	    bool graph_connect (Graph *);				// Retorna se o grafo é conexo.
+	    bool graph_regular (Graph *);				// Retorna se o grafo é regular.
+	    bool graph_complete (Graph *);				// Retorna se o grafo é completo.
+	    void depth_search (Graph *);				// realiza uma busca em profundidade no grafo.
+	    void breadth_search (Graph *);				// realiza uma busca em largura no grafo.
+	    bool vertex_path (Graph *, unsigned, unsigned);		// Retorna se existe um caminho entre 2 vértices.
+	    void Graph_save(Graph *);					// Salva o grafo em um arquivo csv padrão Gephi.
 
 	
 

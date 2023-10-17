@@ -8,22 +8,22 @@
  * @param directed Grafo direcionado ou não.
  * @param n Quantidade de vértices a serem criados.
  */
-ggraph * create_graph(bool directed, int n){
+Graph * create_graph(bool directed, int n){
 
-	ggraph *graph = malloc(sizeof(ggraph));
+	Graph *graph = malloc(sizeof(Graph));
 	
 	graph->total_vertex = n;
 	graph->total_edge = n*n;
 	graph->directed = directed;
 	
-	graph->edge_array = malloc(sizeof(gedge) * graph->total_edge);
+	graph->edge_array = malloc(sizeof(Edge) * graph->total_edge);
 	
 	for(int i=0; i<graph->total_edge; i++){
 		graph->edge_array[i].connect = 0;
 		graph->edge_array[i].weight = 0;
 	}
 	
-	graph->vertex_array = malloc(sizeof(gvertex)*n); 
+	graph->vertex_array = malloc(sizeof(Vertex)*n); 
 
 	for(int i=0; i<n; i++){
 		graph->vertex_array[i].id = i;
@@ -33,7 +33,7 @@ ggraph * create_graph(bool directed, int n){
 	return graph;
 }
 
-void edge_insert (ggraph *graph, unsigned id1, unsigned id2, int weight){
+void edge_insert (Graph *graph, unsigned id1, unsigned id2, int weight){
 	
 	int edge_pos1 = graph->total_vertex * id1 + id2;
 	int edge_pos2 = graph->total_vertex * id2 + id1;
@@ -56,7 +56,7 @@ void edge_insert (ggraph *graph, unsigned id1, unsigned id2, int weight){
 }
 
 
-void edge_remove (ggraph * graph, unsigned id1, unsigned id2){
+void edge_remove (Graph * graph, unsigned id1, unsigned id2){
 	int edge_pos1 = graph->total_vertex * id1 + id2;
 	int edge_pos2 = graph->total_vertex * id2 + id1;
 	
@@ -78,7 +78,7 @@ void edge_remove (ggraph * graph, unsigned id1, unsigned id2){
 
 }
 
-unsigned vertex_degree (ggraph *graph, unsigned id){
+unsigned vertex_degree (Graph *graph, unsigned id){
 	int degree = 0;
 	int array_pos = graph->total_vertex * id;
 
