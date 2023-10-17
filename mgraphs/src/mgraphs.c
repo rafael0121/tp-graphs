@@ -88,3 +88,5 @@ unsigned vertex_degree (ggraph *graph, unsigned id){
 
 	return degree;
 }
+
+
