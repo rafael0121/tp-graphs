@@ -40,17 +40,40 @@ void edge_insert (ggraph *graph, unsigned id1, unsigned id2, int weight){
 	
 	if(graph->directed){
 		graph->edge_array[edge_pos1].connect = 1;
-		graph->edge_array[edge_pos1].weight = 0;
+		graph->edge_array[edge_pos1].weight = weight;
 
 		graph->edge_array[edge_pos2].connect = 1;
-		graph->edge_array[edge_pos2].weight = 0;
+		graph->edge_array[edge_pos2].weight = weight;
 
 	}else{
 		graph->edge_array[edge_pos1].connect = 1;
-		graph->edge_array[edge_pos1].weight = 0;
+		graph->edge_array[edge_pos1].weight = weight;
 
 		graph->edge_array[edge_pos2].connect = 1;
+		graph->edge_array[edge_pos2].weight = weight;
+
+	}
+}
+
+
+void edge_remove (ggraph * graph, unsigned id1, unsigned id2){
+	int edge_pos1 = graph->total_vertex * id1 + id2;
+	int edge_pos2 = graph->total_vertex * id2 + id1;
+	
+	if(graph->directed){
+		graph->edge_array[edge_pos1].connect = 0;
+		graph->edge_array[edge_pos1].weight = 0;
+
+		graph->edge_array[edge_pos2].connect = 0;
+		graph->edge_array[edge_pos2].weight = 0;
+
+	}else{
+		graph->edge_array[edge_pos1].connect = 0;
+		graph->edge_array[edge_pos1].weight = 0;
+
+		graph->edge_array[edge_pos2].connect = 0;
 		graph->edge_array[edge_pos2].weight = 0;
 
 	}
+
 }

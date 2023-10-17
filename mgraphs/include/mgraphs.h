@@ -43,7 +43,7 @@
 	  ggraph * create_graph (bool, int);			
 	    void edge_insert (ggraph *, unsigned, unsigned, int);	// Insere uma aresta no grafo, recebe o id de dois vértices e o peso
 									// da aresta.
-	     int edge_remove (ggraph *, unsigned, unsigned);		// Remove uma aresta do grafo, recebe o id de dois vértices.
+	    void edge_remove (ggraph *, unsigned, unsigned);		// Remove uma aresta do grafo, recebe o id de dois vértices.
 	unsigned vertex_degree (ggraph *, unsigned);			// Retorna o grau do vértice, recebe o id do vértice.
 	    void vertex_neigh (ggraph *, unsigned, int *);		// Salva o id dos vértices vizinhos do vértice solicitado.
 	unsigned graph_degree (ggraph *);				// Retorna o grau do grafo.
