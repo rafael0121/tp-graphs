@@ -7,36 +7,37 @@
 #define GRAPHS_H
 
 	#include <stdlib.h>
-	#include <bool.h>
+	#include <stdbool.h>
 
 	/**
 	 * @brief Struct vértice.
 	 */
-	struct gvertex{
+	struct{
 		unsigned id; 	  // id Identificador do vértice.
-		unsigned vdegree; // Grau do vértice.
 		void *obj;	  // Objeto armazenado no vértice.
-
 	}typedef gvertex;
 
 	/**
 	 * @brief Struct arestas.
 	 */
-	struct gedge{
-		struct gvertex *vert_right; // Vértice a direita.
-		struct gvertex *vert_left;  // Vértice a esquerda.
-		int weight;	    // Peso do vértice
-	}struct gedge;
+	struct{
+		int connect;	// Informa se os vértices estão conectados 1 = conectado/aresta de saída,
+				// 0 = desconectados e -1 aresta de entrada.
+				// 0 = desconectados e -1 aresta de entrada.
+		int weight;	// Peso do vértice
+	}typedef gedge;
 
 	/**
 	 * @brief Struct grafo.
 	 */
-	struct ggraph{
-		unsigned total_vertex; 	// Total de vertíces.
-		unsigned total_edge;	  	// Total de arestas.
-		    bool directed;	// Se o grafo é direcionado ou não.
-		
-	}
+	struct{
+		unsigned total_vertex;		// Total de vertíces.
+		unsigned total_edge;		// Total de arestas na matriz (Incluindo vértices repetidos).
+		    bool directed;		// Se o grafo é direcionado ou não.
+						//
+		   gedge *edge_array;
+		 gvertex *vertex_array;
+	}typedef ggraph;
 
 	//Funções de biblioteca
 	
@@ -53,7 +54,6 @@
 	    void breadth_search (ggraph *);			// realiza uma busca em largura no grafo.
 	    bool vertex_path (ggraph *, unsigned, unsigned);	// Retorna se existe um caminho entre 2 vértices.
 	    void ggraph_save(ggraph *);				// Salva o grafo em um arquivo csv padrão Gephi.
-            :w
 
 	
 
