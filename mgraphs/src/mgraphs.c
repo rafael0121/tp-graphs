@@ -78,3 +78,13 @@ void edge_remove (ggraph * graph, unsigned id1, unsigned id2){
 
 }
 
+unsigned vertex_degree (ggraph *graph, unsigned id){
+	int degree = 0;
+	int array_pos = graph->total_vertex * id;
+
+	for(int i=0; i<graph->total_vertex; i++){
+		degree += graph->edge_array[array_pos + i].connect;
+	}
+
+	return degree;
+}
