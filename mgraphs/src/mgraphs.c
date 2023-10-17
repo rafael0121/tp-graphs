@@ -2,6 +2,12 @@
 #include <stdbool.h>
 #include <mgraphs.h>
 
+/**
+ * @brief Cria um grafo e inicializa suas variáveis
+ *
+ * @param directed Grafo direcionado ou não.
+ * @param n Quantidade de vértices a serem criados.
+ */
 ggraph * create_graph(bool directed, int n){
 
 	ggraph *graph = malloc(sizeof(ggraph));
