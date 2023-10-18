@@ -15,7 +15,7 @@
     struct{
         unsigned id; // Identificador do vértice.
         void *obj; // Objeto armazenado no vértice.
-        unsigned vertex_degree; //grau do vértice.
+        unsigned degree; //grau do vértice.
     }typedef Vertex;
 
     /**
@@ -39,7 +39,7 @@
         unsigned degree; // Grau do grafo
         unsigned total_vertex; // Total de vertíces.
         unsigned total_edge; // Total de arestas na matriz (Incluindo vértices repetidos).
-        unsigned graph_degree;
+        unsigned graph_degree; // Grau do grafo.
         bool directed; // Se o grafo é direcionado ou não.
         Edge *edge_array;
         Vertex *vertex_array;
@@ -52,7 +52,7 @@
 
     void edge_insert (Graph *, unsigned, unsigned, int); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
     void edge_remove (Graph *, unsigned, unsigned); // Remove uma aresta do grafo, recebe o id de dois vértices.
-    void save_vertex_neighbors (Graph *, unsigned, int *); // Salva o id dos vértices vizinhos do vértice solicitado.
+    unsigned save_vertex_neighbors (Graph *, unsigned, unsigned *); // Salva o id dos vértices vizinhos do vértice solicitado.
 
     Graph * graph_create (bool, unsigned); // Cria um novo grafo
     unsigned get_graph_degree (Graph *); // Retorna o grau do grafo.    

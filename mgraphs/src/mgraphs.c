@@ -48,8 +48,8 @@ void edge_insert (Graph *graph, unsigned id1, unsigned id2, int weight){
 	}else{
         if(graph->edge_array[edge_pos1].connect == 0){
             graph->graph_degree+=2;
-            graph->vertex_array[id1].vertex_degree++;
-            graph->vertex_array[id2].vertex_degree++;
+            graph->vertex_array[id1].degree++;
+            graph->vertex_array[id2].degree++;
         }
 
 		graph->edge_array[edge_pos1].connect = 1;
@@ -74,8 +74,8 @@ void edge_remove (Graph * graph, unsigned id1, unsigned id2){
 	}else{
         if(graph->edge_array[edge_pos1].connect == 1){
             graph->graph_degree-=2;
-            graph->vertex_array[id1].vertex_degree--;
-            graph->vertex_array[id2].vertex_degree--;
+            graph->vertex_array[id1].degree--;
+            graph->vertex_array[id2].degree--;
         }
 		graph->edge_array[edge_pos1].connect = 0;
 		graph->edge_array[edge_pos1].weight = 0;
@@ -86,6 +86,18 @@ void edge_remove (Graph * graph, unsigned id1, unsigned id2){
 }
 
 unsigned vertex_degree (Graph *graph, unsigned id){
-	return graph->vertex_array[id].vertex_degree;
+	return graph->vertex_array[id].degree;
 }
+void save_vertex_neighbors (Graph * graph, unsigned id, unsigned *neigh){
 
+    unsigned size = graph->vertex_array[id].degree;
+    neigh = malloc(sizeof(unsigned) * size);
+
+    int j = 0;
+    for(int i=0; i<graph->total_vertex; i++){
+        if(graph->edge_array[(id * graph->total_vertex) + i].connect == 1){
+            neigh[j] = i;
+            j++;
+        }
+    }
+}
