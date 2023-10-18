@@ -52,7 +52,7 @@
 
     void edge_insert (Graph *, unsigned, unsigned, int); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
     void edge_remove (Graph *, unsigned, unsigned); // Remove uma aresta do grafo, recebe o id de dois vértices.
-    unsigned save_vertex_neighbors (Graph *, unsigned, unsigned *); // Salva o id dos vértices vizinhos do vértice solicitado.
+    unsigned * save_vertex_neighbors (Graph *, unsigned); // Salva o id dos vértices vizinhos do vértice solicitado.
 
     Graph * graph_create (bool, unsigned); // Cria um novo grafo
     unsigned get_graph_degree (Graph *); // Retorna o grau do grafo.    
