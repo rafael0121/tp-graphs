@@ -25,9 +25,9 @@ Graph * create_graph(bool is_graph_directed, unsigned N){
 		graph->edge_array[i].weight = 0;
 	}
 	
-	graph->vertex_array = malloc(sizeof(Vertex)*N); 
+	graph->vertex_array = malloc(sizeof(Vertex)*n); 
 
-	for(int i=0; i<N; i++){
+	for(int i=0; i<n; i++){
 		graph->vertex_array[i].id = i;
 		graph->vertex_array[i].obj = NULL;
 	}
@@ -47,6 +47,12 @@ void insert_edge (Graph *graph, unsigned id1, unsigned id2, int weight){
 		graph->edge_array[edge_pos2].connect = -1;
 		graph->edge_array[edge_pos2].weight = weight;
 	}else{
+        if(graph->edge_array[edge_pos1].connect == 0){
+            graph->graph_degree+=2;
+            graph->vertex_array[id1].vertex_degree++;
+            graph->vertex_array[id2].vertex_degree++;
+        }
+
 		graph->edge_array[edge_pos1].connect = 1;
 		graph->edge_array[edge_pos1].weight = weight;
 
@@ -66,6 +72,11 @@ void remove_edge (Graph * graph, unsigned id1, unsigned id2){
 		graph->edge_array[edge_pos2].connect = 0;
 		graph->edge_array[edge_pos2].weight = 0;
 	}else{
+        if(graph->edge_array[edge_pos1].connect == 1){
+            graph->graph_degree-=2;
+            graph->vertex_array[id1].vertex_degree--;
+            graph->vertex_array[id2].vertex_degree--;
+        }
 		graph->edge_array[edge_pos1].connect = 0;
 		graph->edge_array[edge_pos1].weight = 0;
 
@@ -75,12 +86,6 @@ void remove_edge (Graph * graph, unsigned id1, unsigned id2){
 }
 
 unsigned vertex_degree (Graph *graph, unsigned id){
-	int degree = 0;
-	int array_pos = graph->total_vertex * id;
-
-	for(int i=0; i<graph->total_vertex; i++){
-		degree += graph->edge_array[array_pos + i].connect;
-	}
-
-	return degree;
+	return graph->vertex_array[id].vertex_degree;
 }
+
