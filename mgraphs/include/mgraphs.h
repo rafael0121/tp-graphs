@@ -15,6 +15,7 @@
 struct{
 	unsigned id; // Identificador do vértice.
 	void *obj; // Objeto armazenado no vértice.
+    unsigned vertex_degree; //grau do vértice.
 }typedef Vertex;
 
 /**
@@ -38,6 +39,7 @@ struct{
 	unsigned degree; // Grau do grafo
 	unsigned total_vertex; // Total de vertíces.
 	unsigned total_edge; // Total de arestas na matriz (Incluindo vértices repetidos).
+    unsigned graph_degree;
 	bool directed; // Se o grafo é direcionado ou não.
 	Edge *edge_array;
 	Vertex *vertex_array;
@@ -45,14 +47,14 @@ struct{
 
 //Funções de biblioteca
 
-unsigned get_vertex_degree (Graph *, unsigned); // Retorna o grau do vértice, recebe o id do vértice.
+unsigned vertex_degree (Graph *, unsigned); // Retorna o grau do vértice, recebe o id do vértice.
 bool vertex_path_exists (Graph *, unsigned, unsigned); // Retorna se existe um caminho entre 2 vértices.
 
-void insert_edge (Graph *, unsigned, unsigned, int); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
-void remove_edge (Graph *, unsigned, unsigned); // Remove uma aresta do grafo, recebe o id de dois vértices.
-void save_edge_neighbors (Graph *, unsigned, int *); // Salva o id dos vértices vizinhos do vértice solicitado.
+void edge_insert (Graph *, unsigned, unsigned, int); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
+void edge_remove (Graph *, unsigned, unsigned); // Remove uma aresta do grafo, recebe o id de dois vértices.
+void save_vertex_neighbors (Graph *, unsigned, int *); // Salva o id dos vértices vizinhos do vértice solicitado.
 
-Graph * create_graph (bool, unsigned); // Cria um novo grafo
+Graph * graph_create (bool, unsigned); // Cria um novo grafo
 unsigned get_graph_degree (Graph *); // Retorna o grau do grafo.    
 bool is_graph_connect (Graph *); // Retorna se o grafo é conexo.
 bool is_graph_regular (Graph *); // Retorna se o grafo é regular.
