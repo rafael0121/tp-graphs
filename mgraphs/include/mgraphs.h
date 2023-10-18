@@ -43,6 +43,15 @@ struct{
 	Vertex *vertex_array;
 }typedef Graph;
 
+/**
+ * @brief Struct de pesquisa em grafo.
+*/
+struct {
+	Graph tree;
+	int **dataTable;
+}typedef SearchData;
+
+
 //Funções de biblioteca
 
 unsigned get_vertex_degree (Graph *, unsigned); // Retorna o grau do vértice, recebe o id do vértice.
@@ -59,7 +68,9 @@ bool is_graph_regular (Graph *); // Retorna se o grafo é regular.
 bool is_graph_complete (Graph *); // Retorna se o grafo é completo.
 void save_graph(Graph *); // Salva o grafo em um arquivo csv padrão Gephi.
 
-void depth_search (Graph *); // Realiza uma busca em profundidade no grafo.
-void breadth_search (Graph *); // Realiza uma busca em largura no grafo.
+SearchData depth_search (Graph *); // Realiza uma busca em profundidade no grafo.
+SearchData breadth_search (Graph *); // Realiza uma busca em largura no grafo.
+
+bool search_vertex(int *, Vertex *, int, Vertex *);
 
 #endif
