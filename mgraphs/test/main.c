@@ -21,11 +21,20 @@ void print_graph(Graph *graph){
 }
 
 int main(){
-	int n =10;
-	Graph *graph = create_graph(false, n);
+	unsigned n =10;
+	Graph *graph = graph_create(false, n);
 	
 	edge_insert(graph, 6, 2, 0);
+	edge_insert(graph, 3, 2, 0);
+	edge_insert(graph, 5, 2, 0);
+	edge_insert(graph, 1, 2, 0);
+    
 
 	print_graph(graph);
 
+    printf("\n\n %d", vertex_degree(graph, 2));
+    printf("\n\n %d", vertex_degree(graph, 6));
+    printf("\n\n %d", vertex_degree(graph, 3));
+    printf("\n\n %d", vertex_degree(graph, 5));
+    printf("\n\n %d", vertex_degree(graph, 1));
 }
