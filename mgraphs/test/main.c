@@ -24,7 +24,7 @@ int main(){
 	int n =10;
 	Graph *graph = create_graph(false, n);
 	
-	edge_insert(graph, 6, 2, 0);
+	insert_edge(graph, 6, 2, 0);
 
 	print_graph(graph);
 

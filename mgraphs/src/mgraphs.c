@@ -35,7 +35,7 @@ Graph * create_graph(bool is_graph_directed, unsigned N){
 	return graph;
 }
 
-void edge_insert (Graph *graph, unsigned id1, unsigned id2, int weight){
+void insert_edge (Graph *graph, unsigned id1, unsigned id2, int weight){
 	
 	int edge_pos1 = graph->total_vertex * id1 + id2;
 	int edge_pos2 = graph->total_vertex * id2 + id1;
@@ -55,7 +55,7 @@ void edge_insert (Graph *graph, unsigned id1, unsigned id2, int weight){
 	}
 }
 
-void edge_remove (Graph * graph, unsigned id1, unsigned id2){
+void remove_edge (Graph * graph, unsigned id1, unsigned id2){
 	int edge_pos1 = graph->total_vertex * id1 + id2;
 	int edge_pos2 = graph->total_vertex * id2 + id1;
 	
