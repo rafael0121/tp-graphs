@@ -8,12 +8,13 @@
  * @param directed Grafo direcionado ou não.
  * @param n Quantidade de vértices a serem criados.
  */
-Graph * create_graph(bool directed, unsigned vertex_quantity){
+
+Graph * create_graph(bool directed, int n){
 
 	Graph *graph = malloc(sizeof(Graph));
 	
-	graph->total_vertex = vertex_quantity;
-	graph->total_edge = vertex_quantity*vertex_quantity;
+	graph->total_vertex = n;
+	graph->total_edge = n * n;
 	graph->directed = directed;
 	
 	graph->edge_array = malloc(sizeof(Edge) * graph->total_edge);
@@ -23,9 +24,9 @@ Graph * create_graph(bool directed, unsigned vertex_quantity){
 		graph->edge_array[i].weight = 0;
 	}
 	
-	graph->vertex_array = malloc(sizeof(Vertex)*vertex_quantity); 
+	graph->vertex_array = malloc(sizeof(Vertex)*n); 
 
-	for(int i=0; i<vertex_quantity; i++){
+	for(int i=0; i<n; i++){
 		graph->vertex_array[i].id = i;
 		graph->vertex_array[i].obj = NULL;
 	}
@@ -83,3 +84,5 @@ unsigned vertex_degree (Graph *graph, unsigned id){
 
 	return degree;
 }
+
+
