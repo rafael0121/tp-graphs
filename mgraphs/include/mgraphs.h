@@ -38,7 +38,7 @@ struct{
 	unsigned degree; // Grau do grafo
 	unsigned total_vertex; // Total de vertíces.
 	unsigned total_edge; // Total de arestas na matriz (Incluindo vértices repetidos).
-	bool directed; // Se o grafo é direcionado ou não.
+	bool is_graph_directed; // Se o grafo é direcionado ou não.
 	Edge *edge_array;
 	Vertex *vertex_array;
 }typedef Graph;
