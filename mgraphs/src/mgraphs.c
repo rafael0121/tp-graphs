@@ -8,7 +8,7 @@
  * @param directed Grafo direcionado ou não.
  * @param n Quantidade de vértices a serem criados.
  */
-Graph * create_graph(bool directed, int n){
+Graph * create_graph(bool directed, unsigned n){
 
 	Graph *graph = malloc(sizeof(Graph));
 	
