@@ -118,7 +118,6 @@ bool is_graph_complete (Graph *graph){
 bool is_graph_regular (Graph *graph){
 	int first_degree = graph->vertex_array[0].degree;
 	int tam = graph->total_vertex;
-	int aux;
 
 	for ( int i = 1; i < tam; i++)
 	{
