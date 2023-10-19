@@ -107,6 +107,31 @@ unsigned * save_vertex_neighbors (Graph * graph, unsigned id){
     return neigh;
 }
 
+bool is_graph_complete (Graph *graph){
+	if (graph->total_edge == (graph->total_vertex * (graph->total_edge - 1))/2)
+	{
+		return true;
+	}
+	else return false;
+}
+
+bool is_graph_regular (Graph *graph){
+	int first_degree = graph->vertex_array[0].degree;
+	int tam = graph->total_vertex;
+
+	for ( int i = 1; i < tam; i++)
+	{
+		if (first_degree != graph->vertex_array[i].degree)
+		{
+			return false;
+		}
+		
+	}
+	
+	return  true;
+
+}
+
 bool save_graph(Graph *graph){
     FILE *file;   
     
