@@ -25,6 +25,8 @@ void print_graph(Graph *graph){
     for(int i=0; i<graph->total_vertex; i++){
         printf("V%i Grau = %d \n",i, vertex_degree(graph, i));       
     }
+
+    printf("\n\n");
     //----------
         
     //Print vertices neighborhood
@@ -37,7 +39,21 @@ void print_graph(Graph *graph){
         }
         printf("\b]\n");
     }
+    printf("\n\n");
 
+
+    //----------
+    
+    //Print is_graph_regular;
+    
+    if(is_graph_regular(graph)){
+        printf("O grafo é regular.");
+    }else{
+        printf("O grafo NÃO é regular.");
+
+    }
+
+    printf("\n\n");
 }
 
 int main(){
@@ -51,7 +67,7 @@ int main(){
     
 
 	print_graph(graph);
-
+    
     save_graph(graph);
 
 }
