@@ -24,9 +24,9 @@ struct
 /**
  * @brief Function to create a queue
  */
-struct Queue *createQueue(unsigned capacity)
+Queue *createQueue(unsigned capacity)
 {
-    Queue *queue = (struct Queue *)malloc(sizeof(Queue));
+    Queue *queue = (Queue *)malloc(sizeof(Queue));
     queue->capacity = capacity;
     queue->front = queue->size = 0;
     queue->rear = capacity - 1;
@@ -67,8 +67,10 @@ void enqueue(Queue *queue, Vertex item)
  */
 Vertex dequeue(Queue *queue)
 {
+    Vertex invalid;
+    invalid.id = -1;
     if (isEmpty(queue))
-        return;
+        return invalid;
     Vertex item = queue->array[queue->front];
     queue->front = (queue->front + 1) % queue->capacity;
     queue->size = queue->size - 1;
@@ -78,21 +80,21 @@ Vertex dequeue(Queue *queue)
 /**
  * @brief Function to get front of queue
  */
-Vertex front(Queue *queue)
+/*Vertex front(Queue *queue)
 {
     if (isEmpty(queue))
         return;
     return queue->array[queue->front];
-}
+}*/
 
 /**
  * @brief Function to get rear of queue
  */
-Vertex rear(Queue *queue)
+/*Vertex rear(Queue *queue)
 {
     if (isEmpty(queue))
         return;
     return queue->array[queue->rear];
-}
+}*/
 
 #endif

@@ -15,7 +15,7 @@
     struct{
         unsigned id; // Identificador do vértice.
         void *obj; // Objeto armazenado no vértice.
-        unsigned vertex_degree; //grau do vértice.
+        unsigned degree; //grau do vértice.
     }typedef Vertex;
 
     /**
@@ -39,7 +39,7 @@
         unsigned degree; // Grau do grafo
         unsigned total_vertex; // Total de vertíces.
         unsigned total_edge; // Total de arestas na matriz (Incluindo vértices repetidos).
-        unsigned graph_degree;
+        unsigned graph_degree; // Grau do grafo.
         bool directed; // Se o grafo é direcionado ou não.
         Edge *edge_array;
         Vertex *vertex_array;
@@ -49,7 +49,7 @@
  * @brief Struct de pesquisa em grafo.
 */
 struct {
-	Graph tree;
+	Vertex *result;
 	int **dataTable;
 }typedef SearchData;
 
@@ -61,7 +61,7 @@ struct {
 
     void edge_insert (Graph *, unsigned, unsigned, int); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
     void edge_remove (Graph *, unsigned, unsigned); // Remove uma aresta do grafo, recebe o id de dois vértices.
-    void save_vertex_neighbors (Graph *, unsigned, int *); // Salva o id dos vértices vizinhos do vértice solicitado.
+    void save_vertex_neighbors (Graph *, unsigned, unsigned *); // Salva o id dos vértices vizinhos do vértice solicitado.
 
     Graph * graph_create (bool, unsigned); // Cria um novo grafo
     unsigned get_graph_degree (Graph *); // Retorna o grau do grafo.    
@@ -70,9 +70,9 @@ struct {
     bool is_graph_complete (Graph *); // Retorna se o grafo é completo.
     void save_graph(Graph *); // Salva o grafo em um arquivo csv padrão Gephi.
 
-SearchData depth_search (Graph *); // Realiza uma busca em profundidade no grafo.
-SearchData breadth_search (Graph *); // Realiza uma busca em largura no grafo.
+	SearchData * depth_search (Graph *); // Realiza uma busca em profundidade no grafo.
+	SearchData * breadth_search (Graph *, int); // Realiza uma busca em largura no grafo.
 
-bool search_vertex(int *, Vertex *, int, Vertex *);
+	bool search_lv(SearchData *, int, int *);
 
 #endif
