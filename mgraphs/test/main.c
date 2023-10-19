@@ -1,5 +1,6 @@
 #include <mgraphs.h>
 #include <stdio.h>
+#include <math.h>
 
 void print_graph(Graph *graph){
 
@@ -28,7 +29,7 @@ void print_graph(Graph *graph){
         
     //Print vertices neighborhood
     for(int id=0; id<graph->total_vertex; id++){
-        int *neigh_array = save_vertex_neighbors(graph, id);
+        unsigned *neigh_array = save_vertex_neighbors(graph, id);
 
         printf("V%i - Γ[ ", id);
         for(int j=0; j<graph->vertex_array[id].degree;j++){
@@ -50,5 +51,7 @@ int main(){
     
 
 	print_graph(graph);
+
+    save_graph(graph);
 
 }
