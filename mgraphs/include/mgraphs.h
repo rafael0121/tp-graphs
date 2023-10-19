@@ -39,8 +39,8 @@ struct{
 	unsigned degree; // Grau do grafo
 	unsigned total_vertex; // Total de vertíces.
 	unsigned total_edge; // Total de arestas na matriz (Incluindo vértices repetidos).
-    unsigned graph_degree;
 	bool is_graph_directed; // Se o grafo é direcionado ou não.
+	bool is_graph_weighted;
 	Edge *edge_array;
 	Vertex *vertex_array;
 }typedef Graph;
@@ -55,7 +55,7 @@ void edge_remove (Graph *, unsigned, unsigned); // Remove uma aresta do grafo, r
 void save_vertex_neighbors (Graph *, unsigned, int *); // Salva o id dos vértices vizinhos do vértice solicitado.
 
 Graph * graph_create (bool, unsigned); // Cria um novo grafo
-unsigned get_graph_degree (Graph *); // Retorna o grau do grafo.    
+int get_graph_degree (Graph *); // Retorna o grau do grafo.    
 bool is_graph_connect (Graph *); // Retorna se o grafo é conexo.
 bool is_graph_regular (Graph *); // Retorna se o grafo é regular.
 bool is_graph_complete (Graph *); // Retorna se o grafo é completo.
