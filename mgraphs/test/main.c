@@ -54,16 +54,26 @@ void print_graph(Graph *graph){
     }
 
     printf("\n\n");
+    //----------
+    
+    //Print is_graph_complete;
+    
+    if(is_graph_complete(graph)){
+        printf("O grafo é completo.");
+    }else{
+        printf("O grafo NÃO é completo.");
+
+    }
+
+    printf("\n\n");
+
 }
 
 int main(){
-	unsigned n =10;
+	unsigned n =2;
 	Graph *graph = graph_create(false, n);
 	
-	edge_insert(graph, 6, 2, 0);
-	edge_insert(graph, 3, 2, 0);
-	edge_insert(graph, 5, 2, 0);
-	edge_insert(graph, 1, 2, 0);
+	edge_insert(graph, 0, 1, 0);
     
 
 	print_graph(graph);
