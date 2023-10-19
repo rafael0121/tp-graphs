@@ -43,7 +43,16 @@
         Vertex *vertex_array;
     }typedef Graph;
 
-    //Funções de biblioteca
+/**
+ * @brief Struct de pesquisa em grafo.
+*/
+struct {
+	Vertex *result;
+	int **dataTable;
+}typedef SearchData;
+
+
+//Funções de biblioteca
 
     unsigned vertex_degree (Graph *, unsigned); // Retorna o grau do vértice, recebe o id do vértice.
     bool vertex_path_exists (Graph *, unsigned, unsigned); // Retorna se existe um caminho entre 2 vértices.
@@ -58,9 +67,10 @@
     bool is_graph_complete (Graph *); // Retorna se o grafo é completo.
     bool save_graph(Graph *); // Salva o grafo em um arquivo csv padrão Gephi.
 
-    void depth_search (Graph *); // Realiza uma busca em profundidade no grafo.
-    void breadth_search (Graph *); // Realiza uma busca em largura no grafo.
-    
+	SearchData * depth_search (Graph *); // Realiza uma busca em profundidade no grafo.
+	SearchData * breadth_search (Graph *, int); // Realiza uma busca em largura no grafo e busca por um vértice.
+
+	bool search_lv(SearchData *, int, int *); // Retorna os níveis 0 da busca em largura
 
     static unsigned real_total_edge(Graph *graph){
         return graph->degree / (unsigned) 2;  
