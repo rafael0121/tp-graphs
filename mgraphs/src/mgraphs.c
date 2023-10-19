@@ -32,6 +32,7 @@ Graph * graph_create(bool directed, unsigned n){
 	for(int i=0; i<n; i++){
 		graph->vertex_array[i].id = i;
 		graph->vertex_array[i].obj = NULL;
+        graph->vertex_array[i].degree = 0;
 	}
 
 	return graph;
