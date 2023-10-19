@@ -1,6 +1,9 @@
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include <stdbool.h>
 #include <mgraphs.h>
+#include <math.h>
 
 /**
  * @brief Cria um grafo e inicializa suas variáveis
@@ -102,4 +105,42 @@ unsigned * save_vertex_neighbors (Graph * graph, unsigned id){
     }
 
     return neigh;
+}
+
+bool save_graph(Graph *graph){
+    FILE *file;   
+    
+    file = fopen("graph.csv", "w");
+
+    int aux = graph->total_vertex;
+    int count = 0;
+
+    while(aux>0){
+        aux /= 10;
+        count++;
+    }
+    int alg = ceil(log10(graph->total_vertex))+1*sizeof(char);
+
+    char vertex_name[alg]; 
+
+    for(int i = 0; i < graph->total_vertex; i++){
+        sprintf(vertex_name, ";V%d", i);
+        fprintf(file, vertex_name);
+    }
+
+    fprintf(file, "\n");
+
+    for(int id = 0; id < graph->total_vertex; id++){
+        sprintf(vertex_name, "V%d", id);
+        fprintf(file, vertex_name);
+   
+        for(int j = 0; j<graph->total_vertex; j++){
+            char edge_connect[5];
+            sprintf(edge_connect, ";%i", graph->edge_array[(id * graph->total_vertex) + j].connect);
+            fprintf(file, edge_connect);
+        }
+        fprintf(file, "\n");
+    }
+    
+    return true;
 }
