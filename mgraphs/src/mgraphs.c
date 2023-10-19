@@ -50,7 +50,7 @@ void edge_insert (Graph *graph, unsigned id1, unsigned id2, int weight){
 		graph->edge_array[edge_pos2].weight = weight;
 	}else{
         if(graph->edge_array[edge_pos1].connect == 0){
-            graph->graph_degree+=2;
+            graph->degree+=2;
             graph->vertex_array[id1].degree++;
             graph->vertex_array[id2].degree++;
         }
@@ -76,7 +76,7 @@ void edge_remove (Graph * graph, unsigned id1, unsigned id2){
 		graph->edge_array[edge_pos2].weight = 0;
 	}else{
         if(graph->edge_array[edge_pos1].connect == 1){
-            graph->graph_degree-=2;
+            graph->degree-=2;
             graph->vertex_array[id1].degree--;
             graph->vertex_array[id2].degree--;
         }
@@ -108,7 +108,7 @@ unsigned * save_vertex_neighbors (Graph * graph, unsigned id){
 }
 
 bool is_graph_complete (Graph *graph){
-	if (graph->total_edge == (graph->total_vertex * (graph->total_edge - 1))/2)
+	if (real_total_edge(graph) == ( graph->total_vertex * (graph->total_vertex - 1))/2)
 	{
 		return true;
 	}
