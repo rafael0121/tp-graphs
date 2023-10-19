@@ -89,3 +89,29 @@ unsigned vertex_degree (Graph *graph, unsigned id){
 	return graph->vertex_array[id].vertex_degree;
 }
 
+bool is_graph_complete (Graph *graph){
+	if (graph->total_edge == (graph->total_vertex * (graph->total_edge - 1))/2)
+	{
+		return true;
+	}
+	else return false;
+}
+
+bool is_graph_regular (Graph *graph){
+	int first_degree = graph->vertex_array[0].vertex_degree;
+	int tam = graph->total_vertex;
+	int aux;
+
+	for ( int i = 1; i < tam; i++)
+	{
+		if (first_degree != graph->vertex_array[i])
+		{
+			return false;
+		}
+		
+	}
+	
+	return  true;
+
+}
+
