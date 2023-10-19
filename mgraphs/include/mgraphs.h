@@ -1,10 +1,9 @@
 /**
- * @brief Biblioteca de grafos.
- *
+ * @brief Biblioteca de grafos matriz.
  */
 
-#ifndef GRAPHS_H
-#define GRAPHS_H
+#ifndef MGRAPHS_H
+#define MGRAPHS_H
 
     #include <stdlib.h>
     #include <stdbool.h>
