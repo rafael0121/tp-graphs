@@ -1,3 +1,6 @@
+# Comando para compilar
+# make clean all
+
 export BINDIR = $(CURDIR)/bin
 export INCDIR = $(CURDIR)/include
 export SRCDIR = $(CURDIR)/src
@@ -7,7 +10,7 @@ SRC = $(wildcard $(SRCDIR)/*.c)
 TES = $(wildcard $(TESDIR)/*.c)
 
 
-lgraphs: compiletest
+all: compiletest
 
 #Create library and bin folders
 createfolders: clean
@@ -18,14 +21,13 @@ createfolders: clean
 precompilelibrarys: createfolders
 	gcc -Wall -c -I $(INCDIR) $(SRC)
 
-
 #Ar in a static library 
 createstaticlibrary: precompilelibrarys 
-	ar rcs $(LIBDIR)/libuseful.a $(wildcard $(CURDIR)/*.o) 
+	ar rcs  $(LIBDIR)/liblgraphs.a $(wildcard $(CURDIR)/*.o)
 
 #Compile tests
 compiletest: createstaticlibrary 
-	gcc -Wall $(TES) -o $(BINDIR)/main.out -luseful -I $(INCDIR) -L $(LIBDIR)
+	gcc -Wall $(TES) -llgraphs -lm -o $(BINDIR)/main.out -I $(INCDIR) -L $(LIBDIR) 
 
 clean:
 	rm -rf $(BINDIR)
