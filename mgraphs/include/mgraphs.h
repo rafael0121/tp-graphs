@@ -29,7 +29,7 @@
         -> 0: vértices desconectados.
         -> 1: vértices conectados / aresta de saída.
         */
-        int weight; // Peso do vértice
+        double weight; // Peso do vértice
     }typedef Edge;
 
     /**
@@ -59,7 +59,7 @@
     bool is_graph_connect (Graph *); // Retorna se o grafo é conexo.
     bool is_graph_regular (Graph *); // Retorna se o grafo é regular.
     bool is_graph_complete (Graph *); // Retorna se o grafo é completo.
-    void save_graph(Graph *); // Salva o grafo em um arquivo csv padrão Gephi.
+    bool save_graph(Graph *); // Salva o grafo em um arquivo csv padrão Gephi.
 
     void depth_search (Graph *); // Realiza uma busca em profundidade no grafo.
     void breadth_search (Graph *); // Realiza uma busca em largura no grafo.
