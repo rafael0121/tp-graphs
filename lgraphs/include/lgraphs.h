@@ -4,28 +4,27 @@
     #include <stdlib.h>
     #include <stdbool.h>
     #include <math.h>
-
-    typedef struct Vertex Vertex;
-
-    /**
-     * @brief Struct arestas.
-     */
-    struct{
-        Vertex *vertex_left;
-        Vertex *vertex_right;
-        double weight; // Peso do vértice
-    }typedef Edge;
+    
+    typedef struct Edge Edge;
 
     /**
      * @brief Struct vértice.
      */
-    struct Vertex{
+    struct{
         unsigned id; // Identificador do vértice.
         void *obj; // Objeto armazenado no vértice.
         unsigned degree; //grau do vértice.
-        Edge *edge_array; //lista de arestas ligadas ao vértice.
-    };
+        Edge **edge_array; //lista de arestas ligadas ao vértice.
+    }typedef Vertex;
 
+    /**
+     * @brief Struct arestas.
+     */
+    struct Edge{
+        Vertex *vertex_left;
+        Vertex *vertex_right;
+        double weight; // Peso do vértice
+    };
     
     /**
      * @brief Struct grafo.
@@ -33,7 +32,7 @@
     struct{
         unsigned degree; // Grau do grafo
         unsigned total_vertex; // Total de vertíces.
-        unsigned total_edge; // Total de arestas.
+        unsigned total_edge; // Total de arestas possíveis.
         bool directed; // Se o grafo é direcionado ou não.
         Vertex *vertex_array;
     }typedef Graph;
@@ -56,4 +55,8 @@
     void depth_search (Graph *); // Realiza uma busca em profundidade no grafo.
     void breadth_search (Graph *); // Realiza uma busca em largura no grafo.
     
+    static unsigned real_total_edge(Graph *graph){
+        return graph->degree / (unsigned) 2;  
+
+    };
 #endif
