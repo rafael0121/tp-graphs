@@ -59,4 +59,5 @@
         return graph->degree / (unsigned) 2;  
 
     };
+
 #endif
