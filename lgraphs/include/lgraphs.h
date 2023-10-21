@@ -14,7 +14,7 @@
         unsigned id; // Identificador do vértice.
         void *obj; // Objeto armazenado no vértice.
         unsigned degree; //grau do vértice.
-        Edge **edge_array; //lista de arestas ligadas ao vértice.
+        List *edge_incident ; //lista de arestas ligadas ao vértice.
     }typedef Vertex;
 
     /**
@@ -35,6 +35,7 @@
         unsigned total_edge; // Total de arestas possíveis.
         bool directed; // Se o grafo é direcionado ou não.
         Vertex *vertex_array;
+        List *edge_list;
     }typedef Graph;
 
     //Funções de biblioteca
