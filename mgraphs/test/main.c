@@ -85,19 +85,49 @@ void print_graph(Graph *graph)
 		printf("[  %d  ]", i);
 	}
 	printf("\n[  L  ]   ");
-	for (int j = 0; j < 10; j++)
+	for (int j = 0; j < graph->total_vertex; j++)
 	{
 		printf("[  %d  ]", src->dataTable[0][j]);
 	}
 	printf("\n[Nivel]   ");
-	for (int j = 0; j < 10; j++)
+	for (int j = 0; j < graph->total_vertex; j++)
 	{
 		printf("[  %d  ]", src->dataTable[1][j]);
 	}
 	printf("\n[ Pai ]   ");
-	for (int j = 0; j < 10; j++)
+	for (int j = 0; j < graph->total_vertex; j++)
 	{
 		printf("[  %d ]", src->dataTable[2][j]);
+	}
+	//----------
+
+	//Print searched vertex and search table with depht;
+
+	SearchData *src2 = depth_search(graph, 2);
+
+	printf("\n\nID: %d\n\n", src2->result->id);
+
+	printf("Resultado tabela: \n");
+
+	printf("Vertices: ");
+	for (int i = 0; i < graph->total_vertex; i++)
+	{
+		printf("[  %d  ]", i);
+	}
+	printf("\n[ TD  ]   ");
+	for (int j = 0; j < graph->total_vertex; j++)
+	{
+		printf("[  %d  ]", src2->dataTable[0][j]);
+	}
+	printf("\n[ TT  ]   ");
+	for (int j = 0; j < graph->total_vertex; j++)
+	{
+		printf("[  %d  ]", src2->dataTable[1][j]);
+	}
+	printf("\n[ Pai ]   ");
+	for (int j = 0; j < graph->total_vertex; j++)
+	{
+		printf("[  %d ]", src2->dataTable[2][j]);
 	}
 	//----------
 
@@ -110,13 +140,18 @@ void print_graph(Graph *graph)
 }
 
 int main(){
-	unsigned n = 10;
+	unsigned n = 6;
 	Graph *graph = graph_create(false, n);
 	
-	edge_insert(graph, 6, 2, 0);
-	edge_insert(graph, 3, 2, 0);
-	edge_insert(graph, 5, 2, 0);
-	edge_insert(graph, 1, 2, 0);
+	edge_insert(graph, 0, 1, 0);
+	edge_insert(graph, 0, 2, 0);
+	edge_insert(graph, 0, 4, 0);
+	edge_insert(graph, 1, 3, 0);
+	edge_insert(graph, 1, 4, 0);
+	edge_insert(graph, 1, 5, 0);
+	edge_insert(graph, 2, 4, 0);
+	edge_insert(graph, 3, 5, 0);
+	edge_insert(graph, 4, 5, 0);
     
 
 	print_graph(graph);

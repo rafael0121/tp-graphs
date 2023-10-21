@@ -67,10 +67,12 @@ struct {
     bool is_graph_complete (Graph *); // Retorna se o grafo é completo.
     bool save_graph(Graph *); // Salva o grafo em um arquivo csv padrão Gephi.
 
-	SearchData * depth_search (Graph *); // Realiza uma busca em profundidade no grafo.
+	SearchData * depth_search (Graph *, int); // Realiza uma busca em profundidade no grafo.
 	SearchData * breadth_search (Graph *, int); // Realiza uma busca em largura no grafo e busca por um vértice.
 
-	bool search_lv(SearchData *, int, int *); // Retorna os níveis 0 da busca em largura
+	bool search_lv(SearchData *, int, int *); // Retorna os níveis/td 0 das buscas.
+    SearchData *depth_search_recursive(int , SearchData *, int *, Graph *, int); // Chamada recursiva para a busca em profundidade.
+    int *vertex_neighbors (int, Graph *g); // Retorna um array com os vizinhos de um vértice.
 
     static unsigned real_total_edge(Graph *graph){
         return graph->degree / (unsigned) 2;  
