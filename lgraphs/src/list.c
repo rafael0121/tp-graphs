@@ -168,7 +168,10 @@ list * list_clear(list *list){
 }
 
 /**
+ * @brief Serach a node on the list.
  *
+ * @param list List which will be searched.
+ * @param obj_addr Address to the object solicited.
  *
  */
 lnode * list_search_node(list *list, object_p obj_addr){
