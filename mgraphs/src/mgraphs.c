@@ -14,14 +14,13 @@
  */
 Graph *graph_create(bool directed, unsigned n)
 {
-
+ 
 	Graph *graph = malloc(sizeof(Graph));
 
 	graph->total_vertex = n;
 	graph->total_edge = n * n;
 	graph->directed = directed;
-	graph->degree = 0;
-
+	
 	graph->edge_array = malloc(sizeof(Edge) * graph->total_edge);
 
 	for (int i = 0; i < graph->total_edge; i++)
@@ -72,6 +71,7 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
 		graph->edge_array[edge_pos2].weight = weight;
 	}
 }
+
 
 void edge_remove(Graph *graph, unsigned id1, unsigned id2)
 {
@@ -326,6 +326,10 @@ bool is_graph_regular(Graph *graph)
 	}
 
 	return true;
+}
+
+unsigned graph_degree (Graph *graph) {
+	return graph->degree;
 }
 
 bool save_graph(Graph *graph)
