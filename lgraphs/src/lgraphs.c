@@ -30,6 +30,8 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight){
     Vertex *vertex_1 = &graph->vertex_array[id1];
     Vertex *vertex_2 = &graph->vertex_array[id2];
     
+    if(search_edge(vertex_1->edges_incident, id1, id2) != NULL) return; 
+
     Edge *edge = malloc(sizeof(Edge));
     
     edge->vertex_left = vertex_1;
@@ -41,6 +43,8 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight){
     list_add_end(vertex_1->edges_incident, edge, sizeof(Edge));
     list_add_end(vertex_2->edges_incident, edge, sizeof(Edge));
 
+    vertex_1->degree++;
+    vertex_2->degree++;
 }
 
 void edge_remove (Graph *graph, unsigned id1, unsigned id2){
@@ -62,19 +66,30 @@ unsigned vertex_degree (Graph *g, unsigned id) {
 }
 
 unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
-{
-	unsigned size = graph->vertex_array[id].degree;
+{   
+    Vertex *vertex = &graph->vertex_array[id];
+
+	unsigned size = vertex->degree;
 	unsigned *neigh = malloc(sizeof(unsigned) * size);
 
-	for (int i = 0, j = 0; i < graph->total_vertex; i++)
-	{
-        //fazer um ponteiro para caminhar 
-		if (graph->edge_array[(id * graph->total_vertex) + i].connect == 1)
-		{
-			neigh[j] = i;
-			j++;
-		}
-	}
+    lnode *node = vertex->edges_incident->root;
+    Edge *edge = NULL;
+
+    int j = 0;
+	while(node != NULL){
+        edge = node->obj_struct->obj_addr;
+        
+        if(edge->vertex_left->id != id){
+            neigh[j] = edge->vertex_left->id;
+            j++;
+        }else{
+            neigh[j] = edge->vertex_right->id;
+            j++;
+        }
+        node = node->next;
+	};
 
 	return neigh;
 }
+
+

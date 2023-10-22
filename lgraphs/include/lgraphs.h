@@ -62,7 +62,7 @@
 
 
     static Edge * search_edge(list *list, int id1, int id2){
-        lnode *node = NULL;
+        lnode *node = list->root;
         Edge *edge = NULL;
         for(node;node != NULL; node = node->next){
             edge = node->obj_struct->obj_addr;
@@ -71,7 +71,7 @@
                 if(edge->vertex_left->id == id2 || edge->vertex_right->id == id2) return edge;
             }
         }
-
+        
         return NULL;
 
     }
