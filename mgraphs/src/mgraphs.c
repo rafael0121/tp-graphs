@@ -92,15 +92,8 @@ unsigned vertex_degree (Graph *graph, unsigned id){
 int graph_degree (Graph *graph) {
 	int degree = 0;
 	int counter = 0;
-	if (graph->is_graph_weighted == false) {
-		for (counter = 0; counter < graph->total_vertex; counter++) {
-			degree += graph->vertex_array[counter].vertex_degree;
-		}
-	}
-	else {
-		for (counter = 0; counter < graph->total_edge; counter++) {
-			degree += graph->edge_array[counter].weight;
-		}
+	for (counter = 0; counter < graph->total_vertex; counter++) {
+		degree += graph->vertex_array[counter].vertex_degree;
 	}
 	return degree;
 }
