@@ -4,6 +4,7 @@
     #include <stdlib.h>
     #include <stdbool.h>
     #include <math.h>
+    #include <list.h>
     
     typedef struct Edge Edge;
 
@@ -14,7 +15,7 @@
         unsigned id; // Identificador do vértice.
         void *obj; // Objeto armazenado no vértice.
         unsigned degree; //grau do vértice.
-        List *edge_incident ; //lista de arestas ligadas ao vértice.
+        list *edges_incident ; //lista de arestas ligadas ao vértice.
     }typedef Vertex;
 
     /**
@@ -35,7 +36,7 @@
         unsigned total_edge; // Total de arestas possíveis.
         bool directed; // Se o grafo é direcionado ou não.
         Vertex *vertex_array;
-        List *edge_list;
+        list *edges_list;
     }typedef Graph;
 
     //Funções de biblioteca
@@ -60,5 +61,21 @@
         return graph->degree / (unsigned) 2;  
 
     };
+
+
+    static Edge * search_edge(list *list, int id1, int id2){
+        lnode *node = NULL;
+        Edge *edge = NULL;
+        for(node;node != NULL; node = node->next){
+            edge = node->obj_struct->obj_addr;
+
+            if(edge->vertex_left->id == id1 || edge->vertex_right->id == id1){
+                if(edge->vertex_left->id == id2 || edge->vertex_right->id == id2) return edge;
+            }
+        }
+
+        return NULL;
+
+    }
 
 #endif

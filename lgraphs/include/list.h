@@ -43,6 +43,7 @@
 	lnode * list_remove_begin(list *);
 	lnode * list_remove_end(list *);
 	lnode * list_remove(list *, lnode *);
+    lnode * list_search_node(list *, object_p);
 	 list *	list_clear(list *);
 
 	/**
