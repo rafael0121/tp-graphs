@@ -92,4 +92,12 @@ unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
 	return neigh;
 }
 
-
+unsigned graph_degree (Graph *graph) {
+    Vertex *pointer = &graph->vertex_array[0];
+    unsigned degree = 0;
+    while (pointer != NULL) {
+        degree += pointer->degree;
+        pointer = pointer + 1;
+    }
+    return degree;
+}
