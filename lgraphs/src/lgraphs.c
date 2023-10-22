@@ -56,3 +56,25 @@ void edge_remove (Graph *graph, unsigned id1, unsigned id2){
 
     };
 }
+
+unsigned vertex_degree (Graph *g, unsigned id) {
+    return (g->vertex_array[id].degree);
+}
+
+unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
+{
+	unsigned size = graph->vertex_array[id].degree;
+	unsigned *neigh = malloc(sizeof(unsigned) * size);
+
+	for (int i = 0, j = 0; i < graph->total_vertex; i++)
+	{
+        //fazer um ponteiro para caminhar 
+		if (graph->edge_array[(id * graph->total_vertex) + i].connect == 1)
+		{
+			neigh[j] = i;
+			j++;
+		}
+	}
+
+	return neigh;
+}

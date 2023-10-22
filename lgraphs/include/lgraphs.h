@@ -5,8 +5,6 @@
     #include <stdbool.h>
     #include <math.h>
     #include <list.h>
-    
-    typedef struct Edge Edge;
 
     /**
      * @brief Struct vértice.
@@ -25,7 +23,7 @@
         Vertex *vertex_left;
         Vertex *vertex_right;
         double weight; // Peso do vértice
-    };
+    }typedef Edge;
     
     /**
      * @brief Struct grafo.
