@@ -92,11 +92,11 @@ unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
 	return neigh;
 }
 
-SearchData * main_depth_search(Graph *graph){
+SearchData_depth * main_depth_search(Graph *graph){
     unsigned total_vertex = graph->total_vertex;
     Vertex *vertex_array = graph->vertex_array;
 
-    SearchData *data = malloc(sizeof(SearchData));
+    SearchData_depth *data = malloc(sizeof(SearchData_depth));
     
     data->end_time = malloc(total_vertex * sizeof(unsigned));
     data->discovery_time = malloc(total_vertex * sizeof(unsigned));
@@ -119,15 +119,15 @@ SearchData * main_depth_search(Graph *graph){
     return data;
 }
 
-void depth_search(Vertex *v, unsigned *time, SearchData *data){
+void depth_search(Vertex *v, unsigned *time, SearchData_depth *data){
     
     ++*time;
     data->discovery_time[v->id] = *time;
 
-    Vertex *w;
+    Vertex *w = NULL;
     
     lnode *node = v->edges_incident->root;
-    Edge *edge;
+    Edge *edge = NULL;
 
     while(node != NULL){
         edge = node->obj_struct->obj_addr;
@@ -152,3 +152,88 @@ void depth_search(Vertex *v, unsigned *time, SearchData *data){
     ++*time;
     data->end_time[v->id] = *time; 
 };
+
+SearchData_breadth * main_breadth_search(Graph *graph){
+    
+    list *queue = list_create();
+
+    unsigned total_vertex = graph->total_vertex;
+    Vertex *vertex_array = graph->vertex_array;
+
+    SearchData_breadth *data = malloc(sizeof(SearchData_breadth));
+    data->visited_time = malloc(sizeof(SearchData_breadth) * total_vertex);
+    data->level = malloc(sizeof(SearchData_breadth) * total_vertex);
+    data->parent = malloc(sizeof(SearchData_breadth) * total_vertex);
+
+
+    for(int i=0; i<total_vertex;i++){
+        data->visited_time[i] = 0;
+        data->level[i] = 0;
+        data->parent[i] = -1;
+    };
+
+    unsigned time = 0;
+    Vertex *v = NULL; 
+    
+    for(int i=0; i < total_vertex; i++){
+        if(data->level[i] == 0){
+            v = &vertex_array[i];
+            ++time;  
+            data->visited_time[i] = time;
+            list_add_end(queue, &v->id, sizeof(unsigned)); 
+            breadth_search(vertex_array, queue, data, &time);
+        }
+    };
+
+    return data;
+}
+
+
+void breadth_search (Vertex *vertex_array, list *queue, SearchData_breadth *data, unsigned *time){
+    Vertex *v= NULL;
+    Vertex *w= NULL;
+    Edge *edge = NULL;
+
+
+    while(queue->size > 0){
+        unsigned *id = queue->root->obj_struct->obj_addr;
+
+        v = &vertex_array[*id];
+        
+        list_remove_begin(queue);
+        
+        lnode *node = v->edges_incident->root;
+        edge = node->obj_struct->obj_addr;
+
+        while(node!=NULL){
+            edge = node->obj_struct->obj_addr;
+
+            if(edge->vertex_left->id != v->id){
+                w = edge->vertex_left;
+            }else{
+                w = edge->vertex_right;
+            }
+
+            if(data->visited_time[w->id] == 0){
+                //visitar aresta pai 
+
+                data->parent[w->id] = v->id;
+                data->level[w->id] = data->level[v->id] + 1;
+                ++*time;
+                data->visited_time[w->id] = *time;
+                list_add_end(queue, &w->id, sizeof(unsigned)); 
+
+            }else if(data->level[w->id] == (data->level[v->id] + 1)){
+               //visitar aresta tio
+            }else if(data->level[w->id] == (data->level[v->id] + 1) && data->parent[w->id] == data->parent[v->id] && data->visited_time[w->id] > data->visited_time[v->id]){
+                //visitar aresta irmã
+            }else if(data->level[w->id] == data->level[v->id] && data->parent[w->id] != data->parent[v->id] && data->visited_time[w->id] > data->visited_time[v->id]){
+                //visitar aresta primo
+            }
+        
+            node = node->next;
+        }
+
+    }
+
+}

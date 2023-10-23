@@ -42,8 +42,13 @@
         unsigned *end_time;
         unsigned *discovery_time;
         int *parent;
-    }typedef SearchData;
-
+    }typedef SearchData_depth;
+    
+    struct {
+        unsigned *visited_time;
+        unsigned *level;
+        int *parent;
+    }typedef SearchData_breadth;
     //Funções de biblioteca
 
     unsigned vertex_degree (Graph *, unsigned); // Retorna o grau do vértice, recebe o id do vértice.
@@ -59,11 +64,12 @@
     bool is_graph_complete (Graph *); // Retorna se o grafo é completo.
     bool save_graph(Graph *); // Salva o grafo em um arquivo csv padrão Gephi.
 
-    void depth_search (Vertex *, unsigned *, SearchData *); // Realiza uma busca em profundidade no grafo.
-    SearchData * main_depth_search(Graph *graph);
+    void depth_search (Vertex *, unsigned *, SearchData_depth *); // Realiza uma busca em profundidade no grafo.
+    SearchData_depth * main_depth_search(Graph *graph);
 
-    void breadth_search (Graph *); // Realiza uma busca em largura no grafo.
-    
+    SearchData_breadth * main_breadth_search (Graph *); // Realiza uma busca em largura no grafo.
+    void breadth_search (Vertex *, list *, SearchData_breadth *, unsigned *); // Realiza uma busca em largura no grafo.
+                                                   //
     static unsigned real_total_edge(Graph *graph){
         return graph->degree / (unsigned) 2;  
 
