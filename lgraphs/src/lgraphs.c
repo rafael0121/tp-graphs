@@ -45,6 +45,8 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight){
 
     vertex_1->degree++;
     vertex_2->degree++;
+
+    graph->degree += 2;
 }
 
 void edge_remove (Graph *graph, unsigned id1, unsigned id2){
@@ -59,6 +61,8 @@ void edge_remove (Graph *graph, unsigned id1, unsigned id2){
         list_remove(graph->edges_list, list_search_node(graph->edges_list, edge));     
 
     };
+    
+    graph->degree -= 2;
 }
 
 unsigned vertex_degree (Graph *g, unsigned id) {
