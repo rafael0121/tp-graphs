@@ -51,5 +51,7 @@ int main(){
     }
 
     print_graph(graph);
+
+    save_graph(graph);
     
 }
