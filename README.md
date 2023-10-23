@@ -2,6 +2,8 @@
 
 Implementação de uma biblioteca de grafos.
 
+A aplicação é compilada para sistemas Unix.
+
 Grupo:
 
 * Arthur Lanna
