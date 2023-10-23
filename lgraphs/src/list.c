@@ -33,7 +33,6 @@ list * list_create(){
 
 lnode * list_add_begin(list *list, object_p obj, size_t obj_size){
 	lnode *node = node_create(obj, obj_size);
-    lnode *old_root = list->root;
 
     if(list->size == 0){
         list->root = node;
@@ -42,6 +41,8 @@ lnode * list_add_begin(list *list, object_p obj, size_t obj_size){
 
         return node;
     }
+
+    lnode *old_root = list->root;
 
     list->root = node;
 
@@ -64,11 +65,12 @@ lnode * list_add_begin(list *list, object_p obj, size_t obj_size){
  */
 
 lnode * list_add_end(list *list, object_p obj, size_t obj_size){
-	lnode *node = node_create(obj, obj_size);
-
+	
     if(list->size == 0){
         return list_add_begin(list, obj, obj_size);
     }
+
+    lnode *node = node_create(obj, obj_size);
 
 	list->leaf->next = node;
 	node->previous = list->leaf;
