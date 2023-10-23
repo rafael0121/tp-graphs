@@ -45,6 +45,7 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight){
 
     vertex_1->degree++;
     vertex_2->degree++;
+    graph->degree += 2;
 }
 
 void edge_remove (Graph *graph, unsigned id1, unsigned id2){
@@ -182,4 +183,34 @@ bool save_graph(Graph *graph)
     fclose(file);
 
 	return true;
+}
+
+/**
+ * @brief Retorna true se o grafo é completo e false se não for
+ *
+ * @param graph Grafo a ser analisado.
+ */
+bool is_graph_complete(Graph *graph)
+{
+	if ((graph->degree / (unsigned) 2) == (graph->total_vertex * (graph->total_vertex - 1)) / 2)
+	{
+		return true;
+	}
+	else
+		return false;
+}
+
+/**
+ * @brief Retorna grau do grafo e atualiza o grau do grafo.
+ *
+ * @param graph Grafo a ser analisado.
+ */
+unsigned get_graph_degree (Graph *graph) {
+    Vertex *vertex;
+    unsigned degree = 0;
+    for(unsigned id = 0; id < graph->total_vertex; id++){
+        vertex = &graph->vertex_array[id];
+        degree += vertex->degree;
+    }
+    graph->degree = degree;
 }

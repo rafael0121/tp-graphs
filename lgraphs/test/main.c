@@ -50,6 +50,12 @@ int main(){
 
     }
 
+    if(is_graph_complete(graph)) {
+        printf("\n\nGrafo completo");
+    } else {
+        printf("\n\nGrafo incompleto");
+    }
+
     print_graph(graph);
 
     save_graph(graph);
