@@ -92,6 +92,11 @@ unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
 	return neigh;
 }
 
+
+unsigned graph_degree (Graph *graph) {
+    return graph->degree;
+}
+
 SearchData_depth * main_depth_search(Graph *graph){
     unsigned total_vertex = graph->total_vertex;
     Vertex *vertex_array = graph->vertex_array;
