@@ -320,3 +320,19 @@ bool is_graph_connect(Graph *graph){
 
     return true;
 }
+
+bool is_graph_regular(Graph *graph)
+{
+	int first_degree = graph->vertex_array[0].degree;
+	int tam = graph->total_vertex;
+
+	for (int i = 1; i < tam; i++)
+	{
+		if (first_degree != graph->vertex_array[i].degree)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
