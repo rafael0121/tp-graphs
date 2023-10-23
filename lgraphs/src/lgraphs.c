@@ -92,4 +92,63 @@ unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
 	return neigh;
 }
 
+SearchData * main_depth_search(Graph *graph){
+    unsigned total_vertex = graph->total_vertex;
+    Vertex *vertex_array = graph->vertex_array;
 
+    SearchData *data = malloc(sizeof(SearchData));
+    
+    data->end_time = malloc(total_vertex * sizeof(unsigned));
+    data->discovery_time = malloc(total_vertex * sizeof(unsigned));
+    data->parent = malloc(total_vertex * sizeof(int));
+    
+    for(int i=0; i<total_vertex;i++){
+        data->end_time[i] = 0;
+        data->discovery_time[i] = 0;
+        data->parent[i] = -1;
+    };
+
+    unsigned time = 0;
+
+    for(int i=0;i<total_vertex; i++){
+        if(data->end_time[i] == 0){
+            depth_search(&vertex_array[i], &time, data);           
+        };
+    };
+
+    return data;
+}
+
+void depth_search(Vertex *v, unsigned *time, SearchData *data){
+    
+    ++*time;
+    data->discovery_time[v->id] = *time;
+
+    Vertex *w;
+    
+    lnode *node = v->edges_incident->root;
+    Edge *edge;
+
+    while(node != NULL){
+        edge = node->obj_struct->obj_addr;
+
+        if(edge->vertex_left->id != v->id){
+            w = edge->vertex_left;
+        }else{
+            w = edge->vertex_right;
+        }
+
+        if(data->discovery_time[w->id] == 0){
+            // visitar aresta de árvore (v, w)
+            data->parent[w->id] = v->id; 
+            depth_search(w, time, data);           
+
+        }else if(data->end_time[w->id] == 0 && data->parent[v->id] != w->id){
+            // visitar aresta de retorno (v, w)
+        }
+        node = node->next;
+    }
+
+    ++*time;
+    data->end_time[v->id] = *time; 
+};
