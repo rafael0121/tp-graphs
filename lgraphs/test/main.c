@@ -34,12 +34,7 @@ int main(){
     graph = graph_create(graph, 5);
     
     edge_insert(graph, 0, 1, 0);
-    edge_insert(graph, 0, 2, 0);
-    edge_insert(graph, 1, 2, 0);
-    edge_insert(graph, 1, 3, 0);
-    edge_insert(graph, 2, 3, 0);
-    edge_insert(graph, 2, 4, 0);
-    edge_insert(graph, 3, 4, 0);
+    edge_insert(graph, 2, 1, 0);
     
     SearchData_depth *data = main_depth_search(graph);
 
@@ -62,6 +57,12 @@ int main(){
         printf("Nível: %d \n", data_b->level[i]);
         printf("Parent: %d \n", data_b->parent[i]);
 
+    }
+    
+    if(is_graph_connect(graph)){
+        printf("\nO grafo é conexo");
+    }else{
+        printf("\nO grafo NÃO é conexo");
     }
 
     print_graph(graph);

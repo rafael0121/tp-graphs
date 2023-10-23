@@ -203,7 +203,6 @@ void breadth_search (Vertex *vertex_array, list *queue, SearchData_breadth *data
         list_remove_begin(queue);
         
         lnode *node = v->edges_incident->root;
-        edge = node->obj_struct->obj_addr;
 
         while(node!=NULL){
             edge = node->obj_struct->obj_addr;
@@ -267,4 +266,20 @@ bool save_graph(Graph *graph)
     fclose(file);
 
 	return true;
+}
+
+bool is_graph_connect(Graph *graph){
+    SearchData_depth *data = main_depth_search(graph);
+
+    unsigned count = 0;
+
+    for(int i =0; i<graph->total_vertex; i++){
+        if(data->parent[i] == -1){
+            count++;
+        }
+    }
+
+    if(count >1) return false;
+
+    return true;
 }
