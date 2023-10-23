@@ -336,7 +336,7 @@ bool save_graph(Graph *graph)
 {
 	FILE *file;
 
-	file = fopen("graph.csv", "w");
+	file = fopen("matrix_graph.csv", "w");
 
 	int aux = graph->total_vertex;
 	int count = 0;
@@ -372,5 +372,6 @@ bool save_graph(Graph *graph)
 		fprintf(file, "\n");
 	}
 
+	fclose(file);
 	return true;
 }

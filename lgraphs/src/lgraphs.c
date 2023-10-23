@@ -237,3 +237,34 @@ void breadth_search (Vertex *vertex_array, list *queue, SearchData_breadth *data
     }
 
 }
+
+/**
+ * @brief Salva o grafo em um arquivo.
+ *
+ * @param graph Grafo a ser salvo.
+ */
+bool save_graph(Graph *graph)
+{
+	FILE *file;
+
+	file = fopen("list_graph.csv", "w");
+
+    unsigned * neigh;
+    Vertex *vertex;
+
+    for(unsigned id = 0; id < graph->total_vertex; id++){
+        neigh = save_vertex_neighbors(graph, id);
+        vertex = &graph->vertex_array[id];
+
+        fprintf(file, "%i", id);
+        for(int j = 0; j < vertex->degree; j++){
+            fprintf(file, ";%i", neigh[j]);        
+        }
+
+        fprintf(file, "\n");
+    }
+
+    fclose(file);
+
+	return true;
+}
