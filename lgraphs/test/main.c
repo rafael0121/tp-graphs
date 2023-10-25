@@ -24,7 +24,7 @@ void print_graph(Graph *graph){
         printf("\n");
     }
 
-    printf("\nGrau do grafo = %d \n", graph_degree(graph));
+    printf("\nGrau do grafo = %d \n", get_graph_degree(graph));
 
 }
 

@@ -95,11 +95,6 @@ unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
 	return neigh;
 }
 
-
-unsigned graph_degree (Graph *graph) {
-    return graph->degree;
-}
-
 SearchData_depth * main_depth_search(Graph *graph){
     unsigned total_vertex = graph->total_vertex;
     Vertex *vertex_array = graph->vertex_array;
@@ -297,13 +292,7 @@ bool is_graph_complete(Graph *graph)
  * @param graph Grafo a ser analisado.
  */
 unsigned get_graph_degree (Graph *graph) {
-    Vertex *vertex;
-    unsigned degree = 0;
-    for(unsigned id = 0; id < graph->total_vertex; id++){
-        vertex = &graph->vertex_array[id];
-        degree += vertex->degree;
-    }
-    graph->degree = degree;
+    return graph->degree;
 }
 bool is_graph_connect(Graph *graph){
     SearchData_depth *data = main_depth_search(graph);
