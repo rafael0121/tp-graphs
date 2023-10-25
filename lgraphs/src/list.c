@@ -179,12 +179,14 @@ list * list_clear(list *list){
 lnode * list_search_node(list *list, object_p obj_addr){
     lnode *node = NULL;
     void *node_obj_addr = NULL;
-
-    for(node; node != NULL; node = node->next){
+    
+    while(node !=NULL){
         node_obj_addr = node->obj_struct->obj_addr;
         if(node_obj_addr == obj_addr){
             return node;
         }
+
+        node = node->next;
     }
 
     return NULL;
