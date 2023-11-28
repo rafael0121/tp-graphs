@@ -67,7 +67,7 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
 		graph->edge_array[edge_pos2].weight = weight;
 
 	}
-
+    
 }
 
 void edge_remove(Graph *graph, unsigned id1, unsigned id2)
@@ -392,6 +392,20 @@ Edge * get_edge (int line, int column, Graph *graph)
 
 }
 
+static float * fwget_dist (int line, int column, float *dist_array, Graph *graph)
+{
+    unsigned total_vertex = graph->total_vertex;
+
+    if (line >= total_vertex || column >= total_vertex)
+        return NULL;
+
+    int line_pos = line * graph->total_vertex;
+    int column_pos = column;
+
+    return &dist_array[line_pos + column_pos];
+
+}
+
 ShortestPath * floydwarshall(Graph *graph){
     ShortestPath *path = malloc(sizeof(ShortestPath));   
     unsigned total_vertex = graph->total_vertex; 
@@ -404,35 +418,36 @@ ShortestPath * floydwarshall(Graph *graph){
 
     for (int i = 0; i < total_edge; i++)
         dist_array[i] = INFINITY;
-    
-    for (int id = 0; id < total_vertex; id++) {
-        unsigned *w_array = save_vertex_neighbors(graph, id);
-        for (int j = 0; j < graph->vertex_array[id].degree; j++){
-            unsigned *w = &w_array[j];
-            int pos = (total_vertex * id) + *w;
-            dist_array[pos] = graph->edge_array[pos].weight;
+    for (int i = 0; i < total_vertex; i++) {
+        float *dist = fwget_dist (i, i, dist_array, graph);
+        *dist = 0;
+    }
+        
+    for (int line = 0; line < total_vertex; line++) {
+        unsigned *w_array = save_vertex_neighbors(graph, line);
+        for (int column = 0; column < graph->vertex_array[line].degree; column++){
+            unsigned *w = &w_array[column];
+            float * dist = fwget_dist (line, *w, dist_array, graph);
+            *dist = get_edge(line, *w, graph)->weight;
         }
-
+            
     }
 
-    for (int i = 0; i < total_edge; i+=(total_vertex + 1))
-        dist_array[i] = 0;
+    float * direct_dist;
+    float indirect_dist;
 
-    float direct_dist = INFINITY;
-    float indirect_dist = INFINITY;
-    for (int kid = 0; kid < total_vertex; kid++){
-        for (int id = 0; id < total_vertex; id++){
-            int pos_id = total_vertex * id;  
-            for (int j = 0; j < total_vertex; j++){
-                direct_dist = dist_array[pos_id + j];
-                indirect_dist = dist_array[kid + pos_id] + dist_array[pos_id + j];
-                if(direct_dist > indirect_dist){
-                    dist_array[pos_id + j] = indirect_dist;
+    for (int comp = 0; comp < total_vertex; comp++)
+        for (int line = 0; line < total_vertex; line++)
+            for(int column = 0; column < total_vertex; column++){
+                direct_dist = fwget_dist(line, column, dist_array, graph);
+                indirect_dist = *(fwget_dist(line, comp, dist_array, graph)) + *(fwget_dist(comp, column, dist_array, graph));
+                if (*direct_dist > indirect_dist) {
+                    *direct_dist = indirect_dist;
                 }
             }
-        }
 
-    }
+    
+
     return path;
 }
 

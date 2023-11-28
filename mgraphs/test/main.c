@@ -5,6 +5,7 @@
 
 void print_graph(Graph *graph)
 {
+    int v;
 
     //Print Graph
 	printf("\n\n");
@@ -12,23 +13,7 @@ void print_graph(Graph *graph)
 	printf("     | ");
 	for (int i = 0; i < graph->total_vertex; i++)
 	{
-		printf("V%i | ", i);
-	}
-	int v = 0;
-	for (int i = 0; i < graph->total_edge; i++)
-	{
-		if ((i % graph->total_vertex) == 0)
-			printf("\n V%i  | ", v++);
-		    printf(" %i | ", graph->edge_array[i].connect);
-	}
-	
-    //Print Graph
-	printf("\n\n");
-
-	printf("     | ");
-	for (int i = 0; i < graph->total_vertex; i++)
-	{
-		printf("V%i | ", i);
+		printf("V%i  | ", i);
 	}
 
     Edge *print_edge;
@@ -42,11 +27,10 @@ void print_graph(Graph *graph)
             print_edge = get_edge(line, column, graph);
 
             if (print_edge != NULL)
-                printf(" %i | ", print_edge->connect);
+                printf("%.1f | ", print_edge->weight);
         }
 	}
 
-    /*
     printf("\n\n");
     //-------------------------
 
@@ -164,7 +148,8 @@ void print_graph(Graph *graph)
 		printf("\n\nGrafo desconexo");
 
     //----------
-        
+    printf("\n\n");
+
     for(int id=0; id<graph->total_vertex; id++){
         unsigned *neigh_array = save_vertex_neighbors(graph, id);
 
@@ -174,8 +159,6 @@ void print_graph(Graph *graph)
         }
         printf("\b]\n");
     }
-    printf("\n\n");
-
 
     //Print Floyd Marshall
 	printf("\n\n");
@@ -185,7 +168,7 @@ void print_graph(Graph *graph)
 	printf("     | ");
 	for (int i = 0; i < graph->total_vertex; i++)
 	{
-		printf("V%i | ", i);
+		printf("V%i  | ", i);
 	}
 	v = 0;
 	for (int i = 0; i < graph->total_edge; i++)
@@ -193,13 +176,9 @@ void print_graph(Graph *graph)
 		if ((i % graph->total_vertex) == 0)
 			printf("\n V%i  | ", v++);
 
-        if(path->dist_array[i] == INFINITY)
-            printf(" ∞ | ");
-        else
-            printf(" %.1f | ", path->dist_array[i]);
+            printf("%.1f | ", path->dist_array[i]);
 
 	}
-    */
 }
 
 int main(){
@@ -207,8 +186,8 @@ int main(){
 	unsigned n = 4;
 	Graph *graph = graph_create(true, n);
 	
-    edge_insert(graph, 0, 1, 10); 
-    edge_insert(graph, 0, 2, 10); 
+    edge_insert(graph, 0, 1, 8); 
+    edge_insert(graph, 0, 2, 8); 
     edge_insert(graph, 1, 3, 1); 
     edge_insert(graph, 2, 3, 5); 
     edge_insert(graph, 2, 1, 2); 
