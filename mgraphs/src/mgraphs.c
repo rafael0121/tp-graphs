@@ -26,7 +26,7 @@ Graph *graph_create(bool directed, unsigned n)
 	for (int i = 0; i < graph->total_edge; i++)
 	{
 		graph->edge_array[i].connect = 0;
-		graph->edge_array[i].weight = 0;
+		graph->edge_array[i].weight = INFINITY;
 	}
 
 	graph->vertex_array = malloc(sizeof(Vertex) * n);
@@ -47,31 +47,28 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
 	int edge_pos2 = graph->total_vertex * id1 + id2;
 	int edge_pos1 = graph->total_vertex * id2 + id1;
 
+    
 	if (graph->directed)
 	{
+		graph->edge_array[edge_pos2].connect = 1;
+
 		graph->edge_array[edge_pos1].connect = -1;
-		graph->edge_array[edge_pos1].weight = weight;
 
-		graph->edge_array[edge_pos2].connect = 1;
 		graph->edge_array[edge_pos2].weight = weight;
-	}
-	else
-	{
-		if (graph->edge_array[edge_pos1].connect == 0)
-		{
-			graph->degree += 2;
-			graph->vertex_array[id1].degree++;
-			graph->vertex_array[id2].degree++;
-		}
 
+        graph->degree += 2;
+        graph->vertex_array[id1].degree++;
+	} else {
 		graph->edge_array[edge_pos1].connect = 1;
-		graph->edge_array[edge_pos1].weight = weight;
 
 		graph->edge_array[edge_pos2].connect = 1;
-		graph->edge_array[edge_pos2].weight = weight;
-	}
-}
 
+		graph->edge_array[edge_pos1].weight = weight;
+		graph->edge_array[edge_pos2].weight = weight;
+
+	}
+
+}
 
 void edge_remove(Graph *graph, unsigned id1, unsigned id2)
 {
@@ -284,7 +281,7 @@ bool search_lv(SearchData *table, int len, int *callback)
 	return false;
 }
 
-unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
+unsigned * save_vertex_neighbors(Graph *graph, unsigned id)
 {
 	unsigned size = graph->vertex_array[id].degree;
 	unsigned *neigh = malloc(sizeof(unsigned) * size);
@@ -292,7 +289,7 @@ unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
 	int j = 0;
 	for (int i = 0; i < graph->total_vertex; i++)
 	{
-		if (graph->edge_array[(id * graph->total_vertex) + i].connect == 1)
+		if (graph->edge_array[(id * graph->total_vertex) + i].connect == 1) 
 		{
 			neigh[j] = i;
 			j++;
@@ -375,3 +372,53 @@ bool save_graph(Graph *graph)
 	fclose(file);
 	return true;
 }
+
+ShortestPath * floydwarshall(Graph *graph){
+    ShortestPath *path = malloc(sizeof(ShortestPath));   
+    unsigned total_vertex = graph->total_vertex; 
+    unsigned total_edge = graph->total_edge; 
+    float *dist_array = malloc(sizeof(float) * graph->total_edge); 
+    
+    path->graph = graph;
+    path->dist_array = dist_array; 
+    
+
+    for (int i = 0; i < total_edge; i++)
+        dist_array[i] = INFINITY;
+    
+    for (int id = 0; id < total_vertex; id++) {
+        unsigned *w_array = save_vertex_neighbors(graph, id);
+        for (int j = 0; j < graph->vertex_array[id].degree; j++){
+            unsigned *w = &w_array[j];
+            int pos = (total_vertex * id) + *w;
+            dist_array[pos] = graph->edge_array[pos].weight;
+        }
+
+    }
+
+    for (int i = 0; i < total_edge; i+=(total_vertex + 1))
+        dist_array[i] = 0;
+
+    float direct_dist = INFINITY;
+    float indirect_dist = INFINITY;
+    for (int kid = 0; kid < total_vertex; kid++){
+        int pos_kid = total_vertex * kid;  
+        for (int id = 0; id < total_vertex; id++){
+            int pos_id = total_vertex * id;  
+            for (int jid = 0; jid < total_vertex; jid++){
+                direct_dist = dist_array[pos_id + jid];
+                if(direct_dist != INFINITY){
+                    indirect_dist = dist_array[pos_kid + jid] + dist_array[pos_id + jid];
+                    if(direct_dist > indirect_dist)
+                        dist_array[pos_kid + jid] = indirect_dist;
+
+                } else {
+                        dist_array[pos_kid + jid] = indirect_dist;
+                }
+            }
+        }
+
+    }
+    return path;
+}
+
