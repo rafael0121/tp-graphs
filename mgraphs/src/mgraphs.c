@@ -373,6 +373,25 @@ bool save_graph(Graph *graph)
 	return true;
 }
 
+/**
+ * @brief Retorna aresta correspondente a abstração
+ * de uma matriz com linhas e colunas do vetor de 
+ * arestas.
+ */
+Edge * get_edge (int line, int column, Graph *graph) 
+{
+    unsigned total_vertex = graph->total_vertex;
+
+    if (line >= total_vertex || column >= total_vertex)
+        return NULL;
+
+    int line_pos = line * graph->total_vertex;
+    int column_pos = column;
+
+    return &graph->edge_array[line_pos + column_pos];
+
+}
+
 ShortestPath * floydwarshall(Graph *graph){
     ShortestPath *path = malloc(sizeof(ShortestPath));   
     unsigned total_vertex = graph->total_vertex; 
@@ -402,18 +421,13 @@ ShortestPath * floydwarshall(Graph *graph){
     float direct_dist = INFINITY;
     float indirect_dist = INFINITY;
     for (int kid = 0; kid < total_vertex; kid++){
-        int pos_kid = total_vertex * kid;  
         for (int id = 0; id < total_vertex; id++){
             int pos_id = total_vertex * id;  
-            for (int jid = 0; jid < total_vertex; jid++){
-                direct_dist = dist_array[pos_id + jid];
-                if(direct_dist != INFINITY){
-                    indirect_dist = dist_array[pos_kid + jid] + dist_array[pos_id + jid];
-                    if(direct_dist > indirect_dist)
-                        dist_array[pos_kid + jid] = indirect_dist;
-
-                } else {
-                        dist_array[pos_kid + jid] = indirect_dist;
+            for (int j = 0; j < total_vertex; j++){
+                direct_dist = dist_array[pos_id + j];
+                indirect_dist = dist_array[kid + pos_id] + dist_array[pos_id + j];
+                if(direct_dist > indirect_dist){
+                    dist_array[pos_id + j] = indirect_dist;
                 }
             }
         }

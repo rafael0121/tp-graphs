@@ -1,6 +1,7 @@
 #include <mgraphs.h>
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 void print_graph(Graph *graph)
 {
@@ -18,9 +19,34 @@ void print_graph(Graph *graph)
 	{
 		if ((i % graph->total_vertex) == 0)
 			printf("\n V%i  | ", v++);
-		printf(" %i | ", graph->edge_array[i].connect);
+		    printf(" %i | ", graph->edge_array[i].connect);
 	}
 	
+    //Print Graph
+	printf("\n\n");
+
+	printf("     | ");
+	for (int i = 0; i < graph->total_vertex; i++)
+	{
+		printf("V%i | ", i);
+	}
+
+    Edge *print_edge;
+
+	for (int line = 0; line < graph->total_vertex; line++)
+    {
+        printf("\n V%i  | ", line);
+
+        for (int column = 0; column < graph->total_vertex; column++)
+        {
+            print_edge = get_edge(line, column, graph);
+
+            if (print_edge != NULL)
+                printf(" %i | ", print_edge->connect);
+        }
+	}
+
+    /*
     printf("\n\n");
     //-------------------------
 
@@ -137,25 +163,61 @@ void print_graph(Graph *graph)
 	else 
 		printf("\n\nGrafo desconexo");
 
+    //----------
+        
+    for(int id=0; id<graph->total_vertex; id++){
+        unsigned *neigh_array = save_vertex_neighbors(graph, id);
+
+        printf("V%i - Γ[ ", id);
+        for(int j=0; j<graph->vertex_array[id].degree;j++){
+            printf("%i,", neigh_array[j]);
+        }
+        printf("\b]\n");
+    }
+    printf("\n\n");
+
+
+    //Print Floyd Marshall
+	printf("\n\n");
+
+    ShortestPath *path = floydwarshall(graph);
+
+	printf("     | ");
+	for (int i = 0; i < graph->total_vertex; i++)
+	{
+		printf("V%i | ", i);
+	}
+	v = 0;
+	for (int i = 0; i < graph->total_edge; i++)
+	{
+		if ((i % graph->total_vertex) == 0)
+			printf("\n V%i  | ", v++);
+
+        if(path->dist_array[i] == INFINITY)
+            printf(" ∞ | ");
+        else
+            printf(" %.1f | ", path->dist_array[i]);
+
+	}
+    */
 }
 
 int main(){
-	unsigned n = 6;
-	Graph *graph = graph_create(false, n);
+    srand(time(NULL));
+	unsigned n = 4;
+	Graph *graph = graph_create(true, n);
 	
-	edge_insert(graph, 0, 1, 0);
-	edge_insert(graph, 0, 2, 0);
-	edge_insert(graph, 0, 4, 0);
-	edge_insert(graph, 1, 3, 0);
-	edge_insert(graph, 1, 4, 0);
-	edge_insert(graph, 1, 5, 0);
-	edge_insert(graph, 2, 4, 0);
-	edge_insert(graph, 3, 5, 0);
-	edge_insert(graph, 4, 5, 0);
+    edge_insert(graph, 0, 1, 10); 
+    edge_insert(graph, 0, 2, 10); 
+    edge_insert(graph, 1, 3, 1); 
+    edge_insert(graph, 2, 3, 5); 
+    edge_insert(graph, 2, 1, 2); 
+    
+
     
 
 	print_graph(graph);
     
-    save_graph(graph);
+    //save_graph(graph);
 
 }

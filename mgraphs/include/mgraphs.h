@@ -83,7 +83,12 @@
         return graph->degree / (unsigned) 2;  
     };
     
-    //Floyd-Warshall
+    // Floyd-Warshall
     ShortestPath * floydwarshall(Graph *graph);
 
+
+    // Api para mover no vetor-matriz
+    Edge * get_edge (int , int, Graph *);
+    
+    
 #endif
