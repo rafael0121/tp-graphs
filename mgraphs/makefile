@@ -20,7 +20,7 @@ createfolders: clean
 
 #Compile Library
 precompilelibrarys: createfolders
-	gcc -Wall -c -I $(INCDIR) $(SRC)
+	gcc -g -Wall -c -I $(INCDIR) $(SRC)
 
 #Ar in a static library 
 createstaticlibrary: precompilelibrarys 
@@ -28,7 +28,7 @@ createstaticlibrary: precompilelibrarys
 
 #Compile tests
 compiletest: createstaticlibrary 
-	gcc -Wall $(TES) -lmgraphs -lm -o $(BINDIR)/main.out -I $(INCDIR) -L $(LIBDIR) 
+	gcc -g -Wall $(TES) -lmgraphs -lm -o $(BINDIR)/main.out -I $(INCDIR) -L $(LIBDIR) 
 
 clean:
 	rm -rf $(BINDIR)

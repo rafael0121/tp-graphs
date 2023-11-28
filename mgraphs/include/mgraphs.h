@@ -8,6 +8,7 @@
     #include <stdlib.h>
     #include <stdbool.h>
     #include <math.h>
+    #include <limits.h>
     /**
      * @brief Struct vértice.
      */
@@ -28,7 +29,7 @@
         -> 0: vértices desconectados.
         -> 1: vértices conectados / aresta de saída.
         */
-        double weight; // Peso do vértice
+        float weight; // Peso do vértice
     }typedef Edge;
 
     /**
@@ -50,6 +51,11 @@
     Vertex *result;
     int **dataTable;
   }typedef SearchData;
+    
+    struct {
+        float *dist_array;
+        Graph *graph;
+    } typedef ShortestPath;
 
 //Funções de biblioteca
 
@@ -76,5 +82,13 @@
     static unsigned real_total_edge(Graph *graph){
         return graph->degree / (unsigned) 2;  
     };
+    
+    // Floyd-Warshall
+    ShortestPath * floydwarshall(Graph *graph);
 
+
+    // Api para mover no vetor-matriz
+    Edge * get_edge (int , int, Graph *);
+    
+    
 #endif
