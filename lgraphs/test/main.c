@@ -33,7 +33,7 @@ int main(){
     Graph *graph = NULL;
     int n = 5;
 
-    graph = graph_create(graph, 5);
+    graph = graph_create(1, 3);
     
     edge_insert(graph, 0, 1, 0);
     edge_insert(graph, 2, 1, 0);

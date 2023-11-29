@@ -42,10 +42,15 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight){
     
     list_add_end(vertex_1->edges_incident, edge, sizeof(Edge));
     list_add_end(vertex_2->edges_incident, edge, sizeof(Edge));
+    if (graph->directed) {
+        vertex_1->degree++;
+        graph->degree += 1;
+    } else {
+        vertex_1->degree++;
+        vertex_2->degree++;
+        graph->degree += 2;
 
-    vertex_1->degree++;
-    vertex_2->degree++;
-    graph->degree += 2;
+    }
 }
 
 void edge_remove (Graph *graph, unsigned id1, unsigned id2){
