@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-
+#include <stdint.h>
+     
 void print_graph(Graph *graph)
 {
     int v;
@@ -84,7 +85,7 @@ void print_graph(Graph *graph)
 	//Print searched vertex and search table;
 
 	SearchData *src = breadth_search(graph, 2);
-
+    
 	printf("\nID: %d\n\n", src->result->id);
 
 	printf("Resultado tabela: \n");
@@ -110,7 +111,7 @@ void print_graph(Graph *graph)
 		printf("[  %d ]", src->dataTable[2][j]);
 	}
 	//----------
-
+   
 	//Print searched vertex and search table with depht;
 
 	SearchData *src2 = depth_search(graph, 2);
@@ -181,22 +182,47 @@ void print_graph(Graph *graph)
 	}
 }
 
+
+void test_graph ()
+{
+    clock_t start, end;
+    double cpu_time_used;
+
+	Graph *graph = graph_create(true, 100);
+
+    for (int i = 0; i < 1000; i++)
+    {
+        edge_insert(graph, (rand() % 100), (rand() % 100), (rand() % 100)); 
+    }
+
+    start = clock();
+    floydwarshall(graph);
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("\n\n%f\n", cpu_time_used);
+
+    Graph *graph2 = graph_create(true, 1000);
+
+    for (int i = 0; i < 1000; i++)
+    {
+        edge_insert(graph2, (rand() % 100), (rand() % 100), (rand() % 100)); 
+    }
+    
+    start = clock();
+    floydwarshall(graph2);
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("\n\n%f\n", cpu_time_used);
+}
+
 int main(){
     srand(time(NULL));
-	unsigned n = 4;
-	Graph *graph = graph_create(true, n);
-	
-    edge_insert(graph, 0, 1, 8); 
-    edge_insert(graph, 0, 2, 8); 
-    edge_insert(graph, 1, 3, 1); 
-    edge_insert(graph, 2, 3, 5); 
-    edge_insert(graph, 2, 1, 2); 
     
+
+
+    test_graph();
 
     
 
-	print_graph(graph);
     
-    //save_graph(graph);
-
 }
