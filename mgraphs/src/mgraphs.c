@@ -236,6 +236,24 @@ Edge * get_edge (int line, int column, Graph *graph)
 
 }
 
+int graph_delete (Graph *graph)
+{
+    // free vertex objects
+    for (int i = 0; i < graph->total_vertex; i++)
+        free(graph->vertex_array[i].obj);
+    
+    // free vertex array 
+    free(graph->vertex_array);
+    
+    // free edge array 
+    free(graph->edge_array);
+
+    //free graph
+    free(graph);
+
+    return 1;
+};
+
 /*
  * #################################################################################
  * ------------------------- END Basic Graphs Operations ---------------------------
@@ -477,7 +495,6 @@ ShortestPath * floydwarshall(Graph *graph){
             float * dist = fwget_dist (line, *w, dist_array, graph);
             *dist = get_edge(line, *w, graph)->weight;
         }
-            
     }
 
     float * direct_dist;
@@ -506,7 +523,29 @@ ShortestPath * floydwarshall(Graph *graph){
  * #################################################################################
  */
 
+ShortestPath * astar (Graph *graph, unsigned id){
+    ShortestPath *path = malloc(sizeof(ShortestPath));   
 
+    unsigned total_vertex = graph->total_vertex; 
+    unsigned total_edge = graph->total_edge; 
+
+    float *dist_array = malloc(sizeof(float) * graph->total_edge); 
+    
+    path->graph = graph;
+    path->dist_array = dist_array; 
+    path->id = id;
+    
+
+    for (int i = 0; i < total_edge; i++)
+        dist_array[i] = INFINITY;
+
+    float *dist = fwget_dist (id, id, dist_array, graph);
+    *dist = 0;
+
+    struct vertexpath *varray = malloc(sizeof(struct vertexpath)*total_vertex);
+
+    
+};
 
 /*
  * #################################################################################

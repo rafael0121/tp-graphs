@@ -52,12 +52,14 @@
     int **dataTable;
   }typedef SearchData;
     
+   
     struct {
         float *dist_array;
+        unsigned id;
         Graph *graph;
     } typedef ShortestPath;
-
-//Funções de biblioteca
+    
+  //Funções de biblioteca
 
     unsigned vertex_degree (Graph *, unsigned); // Retorna o grau do vértice, recebe o id do vértice.
     bool vertex_path_exists (Graph *, unsigned, unsigned); // Retorna se existe um caminho entre 2 vértices.
@@ -78,6 +80,10 @@
     bool search_lv(SearchData *, int, int *); // Retorna os níveis/td 0 das buscas.
     SearchData *depth_search_recursive(int , SearchData *, int *, Graph *, int); // Chamada recursiva para a busca em profundidade.
     int *vertex_neighbors (int, Graph *g); // Retorna um array com os vizinhos de um vértice.
+    
+    // Deleta o grafo e libera memória
+    int graph_delete (Graph *);
+
 
     static unsigned real_total_edge(Graph *graph){
         return graph->degree / (unsigned) 2;  
@@ -86,7 +92,15 @@
     // Floyd-Warshall
     ShortestPath * floydwarshall(Graph *graph);
 
+    // A*
+    ShortestPath * astar (Graph *, unsigned);
 
+    struct vertexpath{
+        struct vertexpath *pred;
+        double dist;
+        bool visited;
+    };
+    
     // Api para mover no vetor-matriz
     Edge * get_edge (int , int, Graph *);
     
