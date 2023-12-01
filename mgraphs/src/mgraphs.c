@@ -64,6 +64,7 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
 
         graph->degree += 2;
         graph->vertex_array[id1].degree++;
+
 	} else {
 		graph->edge_array[edge_pos1].connect = 1;
 
@@ -71,7 +72,10 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
 
 		graph->edge_array[edge_pos1].weight = weight;
 		graph->edge_array[edge_pos2].weight = weight;
-
+        
+        graph->degree += 2;
+        graph->vertex_array[id1].degree++;
+        graph->vertex_array[id2].degree++;
 	}
     
 }
@@ -523,7 +527,7 @@ ShortestPath * floydwarshall(Graph *graph){
  * #################################################################################
  */
 
-ShortestPath * astar (Graph *graph, unsigned id){
+ShortestPath * astar (Graph *graph, unsigned src_id){
     ShortestPath *path = malloc(sizeof(ShortestPath));   
 
     unsigned total_vertex = graph->total_vertex; 
@@ -533,18 +537,59 @@ ShortestPath * astar (Graph *graph, unsigned id){
     
     path->graph = graph;
     path->dist_array = dist_array; 
-    path->id = id;
+    path->id = src_id;
     
 
     for (int i = 0; i < total_edge; i++)
         dist_array[i] = INFINITY;
 
-    float *dist = fwget_dist (id, id, dist_array, graph);
+    float *dist = fwget_dist (src_id, src_id, dist_array, graph);
     *dist = 0;
 
+    //Dijkstra   
+   
     struct vertexpath *varray = malloc(sizeof(struct vertexpath)*total_vertex);
 
-    
+    for (int i = 0; i < total_vertex; i++) {
+        varray[i].pred = -1;
+        varray[i].dist = &dist_array[i];
+        varray[i].visited = false;
+    }
+
+    varray[src_id].dist = 0;
+    varray[src_id].visited = true;
+
+    for (int x = 0; x < total_vertex; x++) {
+        // Se vértice não tiver sido visitado ainda
+        if (!varray[x].visited) {
+
+            // Visitar vértice x
+            varray[x].visited = true;
+            
+            // Salva vizinhança do vértice x;
+            unsigned *x_neigh = save_vertex_neighbors(graph, x);
+            unsigned y;
+
+            for (int i = 0; i < graph->vertex_array[x].degree; i++) {
+                y = x_neigh[i];
+
+                // se o vértice y não tiver sido vizitado ainda
+                if (varray[y].visited == false) {
+                    int src_x_y = *varray[x].dist + get_edge(x, y, graph)->weight;
+                    /*
+                     * Se a distância da fonte até y passando por x
+                     * for maior que a distância da fonte até y.
+                     */
+                    if (src_x_y < *varray[y].dist) {
+                        *varray[y].dist = src_x_y;
+                        varray[y].pred = x;
+                    }
+                }
+             }       
+        }
+    }
+
+    return path;
 };
 
 /*

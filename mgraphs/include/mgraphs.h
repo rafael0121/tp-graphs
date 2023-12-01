@@ -96,8 +96,8 @@
     ShortestPath * astar (Graph *, unsigned);
 
     struct vertexpath{
-        struct vertexpath *pred;
-        double dist;
+        int pred;
+        float * dist;
         bool visited;
     };
     
