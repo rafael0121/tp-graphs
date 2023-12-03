@@ -2,44 +2,51 @@
 #include <stdio.h>
 #include <list.h>
 #include <lgraphs.h>
+#include <limits.h>
 
-Graph * graph_create(bool directed, unsigned n){
-	Graph *graph = malloc(sizeof(Graph));
+#define INFINITY_DOUBLE INFINITY
+
+Graph *graph_create(bool directed, unsigned n)
+{
+    Graph *graph = malloc(sizeof(Graph));
 
     graph->total_vertex = n;
-    graph->total_edge = n * (n-1);
-	graph->directed = directed;
-	graph->degree = 0;
-    
+    graph->total_edge = n * (n - 1);
+    graph->directed = directed;
+    graph->degree = 0;
+
     graph->vertex_array = malloc(sizeof(Vertex) * n);
 
-    for(int i=0; i<n; i++){
-		graph->vertex_array[i].id = i;
-		graph->vertex_array[i].obj = NULL;
-		graph->vertex_array[i].degree = 0;
+    for (int i = 0; i < n; i++)
+    {
+        graph->vertex_array[i].id = i;
+        graph->vertex_array[i].obj = NULL;
+        graph->vertex_array[i].degree = 0;
         graph->vertex_array[i].edges_incident = list_create();
-	}
+    }
 
     graph->edges_list = list_create();
-    
+
     return graph;
 }
 
-void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight){
-    
+void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
+{
+
     Vertex *vertex_1 = &graph->vertex_array[id1];
     Vertex *vertex_2 = &graph->vertex_array[id2];
-    
-    if(search_edge(vertex_1->edges_incident, id1, id2) != NULL) return; 
+
+    if (search_edge(vertex_1->edges_incident, id1, id2) != NULL)
+        return;
 
     Edge *edge = malloc(sizeof(Edge));
-    
+
     edge->vertex_left = vertex_1;
     edge->vertex_right = vertex_2;
     edge->weight = weight;
 
     list_add_begin(graph->edges_list, edge, sizeof(Edge));
-    
+
     list_add_end(vertex_1->edges_incident, edge, sizeof(Edge));
     list_add_end(vertex_2->edges_incident, edge, sizeof(Edge));
 
@@ -48,64 +55,72 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight){
     graph->degree += 2;
 }
 
-void edge_remove (Graph *graph, unsigned id1, unsigned id2){
+void edge_remove(Graph *graph, unsigned id1, unsigned id2)
+{
     Vertex *vertex_1 = &graph->vertex_array[id1];
     Vertex *vertex_2 = &graph->vertex_array[id2];
 
     Edge *edge = search_edge(vertex_1->edges_incident, id1, id2);
 
-    if(edge != NULL){
-        list_remove(vertex_1->edges_incident, list_search_node(vertex_1->edges_incident, edge));     
-        list_remove(vertex_2->edges_incident, list_search_node(vertex_2->edges_incident, edge));     
-        list_remove(graph->edges_list, list_search_node(graph->edges_list, edge));     
-
+    if (edge != NULL)
+    {
+        list_remove(vertex_1->edges_incident, list_search_node(vertex_1->edges_incident, edge));
+        list_remove(vertex_2->edges_incident, list_search_node(vertex_2->edges_incident, edge));
+        list_remove(graph->edges_list, list_search_node(graph->edges_list, edge));
     };
-    
+
     graph->degree -= 2;
 }
 
-unsigned vertex_degree (Graph *g, unsigned id) {
+unsigned vertex_degree(Graph *g, unsigned id)
+{
     return (g->vertex_array[id].degree);
 }
 
 unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
-{   
+{
     Vertex *vertex = &graph->vertex_array[id];
 
-	unsigned size = vertex->degree;
-	unsigned *neigh = malloc(sizeof(unsigned) * size);
+    unsigned size = vertex->degree;
+    unsigned *neigh = malloc(sizeof(unsigned) * size);
 
     lnode *node = vertex->edges_incident->root;
     Edge *edge = NULL;
 
     int j = 0;
-	while(node != NULL){
+    while (node != NULL)
+    {
         edge = node->obj_struct->obj_addr;
-        
-        if(edge->vertex_left->id != id){
+
+        if (edge->vertex_left->id != id)
+        {
             neigh[j] = edge->vertex_left->id;
             j++;
-        }else{
+        }
+        else
+        {
             neigh[j] = edge->vertex_right->id;
             j++;
         }
         node = node->next;
-	};
+    };
 
-	return neigh;
+    return neigh;
 }
 
-SearchData_depth * main_depth_search(Graph *graph){
+SearchData_depth *main_depth_search(Graph *graph)
+{
     unsigned total_vertex = graph->total_vertex;
     Vertex *vertex_array = graph->vertex_array;
 
     SearchData_depth *data = malloc(sizeof(SearchData_depth));
-    
+
     data->end_time = malloc(total_vertex * sizeof(unsigned));
     data->discovery_time = malloc(total_vertex * sizeof(unsigned));
     data->parent = malloc(total_vertex * sizeof(int));
-    
-    for(int i=0; i<total_vertex;i++){
+
+    for (int i = 0; i < total_vertex; i++)
+    {
         data->end_time[i] = 0;
         data->discovery_time[i] = 0;
         data->parent[i] = -1;
@@ -113,51 +128,61 @@ SearchData_depth * main_depth_search(Graph *graph){
 
     unsigned time = 0;
 
-    for(int i=0;i<total_vertex; i++){
-        if(data->end_time[i] == 0){
-            depth_search(&vertex_array[i], &time, data);           
+    for (int i = 0; i < total_vertex; i++)
+    {
+        if (data->end_time[i] == 0)
+        {
+            depth_search(&vertex_array[i], &time, data);
         };
     };
 
     return data;
 }
 
-void depth_search(Vertex *v, unsigned *time, SearchData_depth *data){
-    
+void depth_search(Vertex *v, unsigned *time, SearchData_depth *data)
+{
+
     ++*time;
     data->discovery_time[v->id] = *time;
 
     Vertex *w = NULL;
-    
+
     lnode *node = v->edges_incident->root;
     Edge *edge = NULL;
 
-    while(node != NULL){
+    while (node != NULL)
+    {
         edge = node->obj_struct->obj_addr;
 
-        if(edge->vertex_left->id != v->id){
+        if (edge->vertex_left->id != v->id)
+        {
             w = edge->vertex_left;
-        }else{
+        }
+        else
+        {
             w = edge->vertex_right;
         }
 
-        if(data->discovery_time[w->id] == 0){
+        if (data->discovery_time[w->id] == 0)
+        {
             // visitar aresta de árvore (v, w)
-            data->parent[w->id] = v->id; 
-            depth_search(w, time, data);           
-
-        }else if(data->end_time[w->id] == 0 && data->parent[v->id] != w->id){
+            data->parent[w->id] = v->id;
+            depth_search(w, time, data);
+        }
+        else if (data->end_time[w->id] == 0 && data->parent[v->id] != w->id)
+        {
             // visitar aresta de retorno (v, w)
         }
         node = node->next;
     }
 
     ++*time;
-    data->end_time[v->id] = *time; 
+    data->end_time[v->id] = *time;
 };
 
-SearchData_breadth * main_breadth_search(Graph *graph){
-    
+SearchData_breadth *main_breadth_search(Graph *graph)
+{
+
     list *queue = list_create();
 
     unsigned total_vertex = graph->total_vertex;
@@ -168,22 +193,24 @@ SearchData_breadth * main_breadth_search(Graph *graph){
     data->level = malloc(sizeof(SearchData_breadth) * total_vertex);
     data->parent = malloc(sizeof(SearchData_breadth) * total_vertex);
 
-
-    for(int i=0; i<total_vertex;i++){
+    for (int i = 0; i < total_vertex; i++)
+    {
         data->visited_time[i] = 0;
         data->level[i] = 0;
         data->parent[i] = -1;
     };
 
     unsigned time = 0;
-    Vertex *v = NULL; 
-    
-    for(int i=0; i < total_vertex; i++){
-        if(data->level[i] == 0){
+    Vertex *v = NULL;
+
+    for (int i = 0; i < total_vertex; i++)
+    {
+        if (data->level[i] == 0)
+        {
             v = &vertex_array[i];
-            ++time;  
+            ++time;
             data->visited_time[i] = time;
-            list_add_end(queue, &v->id, sizeof(unsigned)); 
+            list_add_end(queue, &v->id, sizeof(unsigned));
             breadth_search(vertex_array, queue, data, &time);
         }
     };
@@ -191,53 +218,61 @@ SearchData_breadth * main_breadth_search(Graph *graph){
     return data;
 }
 
-
-void breadth_search (Vertex *vertex_array, list *queue, SearchData_breadth *data, unsigned *time){
-    Vertex *v= NULL;
-    Vertex *w= NULL;
+void breadth_search(Vertex *vertex_array, list *queue, SearchData_breadth *data, unsigned *time)
+{
+    Vertex *v = NULL;
+    Vertex *w = NULL;
     Edge *edge = NULL;
 
-
-    while(queue->size > 0){
+    while (queue->size > 0)
+    {
         unsigned *id = queue->root->obj_struct->obj_addr;
 
         v = &vertex_array[*id];
-        
+
         list_remove_begin(queue);
-        
+
         lnode *node = v->edges_incident->root;
 
-        while(node!=NULL){
+        while (node != NULL)
+        {
             edge = node->obj_struct->obj_addr;
 
-            if(edge->vertex_left->id != v->id){
+            if (edge->vertex_left->id != v->id)
+            {
                 w = edge->vertex_left;
-            }else{
+            }
+            else
+            {
                 w = edge->vertex_right;
             }
 
-            if(data->visited_time[w->id] == 0){
-                //visitar aresta pai 
+            if (data->visited_time[w->id] == 0)
+            {
+                // visitar aresta pai
 
                 data->parent[w->id] = v->id;
                 data->level[w->id] = data->level[v->id] + 1;
                 ++*time;
                 data->visited_time[w->id] = *time;
-                list_add_end(queue, &w->id, sizeof(unsigned)); 
-
-            }else if(data->level[w->id] == (data->level[v->id] + 1)){
-               //visitar aresta tio
-            }else if(data->level[w->id] == (data->level[v->id] + 1) && data->parent[w->id] == data->parent[v->id] && data->visited_time[w->id] > data->visited_time[v->id]){
-                //visitar aresta irmã
-            }else if(data->level[w->id] == data->level[v->id] && data->parent[w->id] != data->parent[v->id] && data->visited_time[w->id] > data->visited_time[v->id]){
-                //visitar aresta primo
+                list_add_end(queue, &w->id, sizeof(unsigned));
             }
-        
+            else if (data->level[w->id] == (data->level[v->id] + 1))
+            {
+                // visitar aresta tio
+            }
+            else if (data->level[w->id] == (data->level[v->id] + 1) && data->parent[w->id] == data->parent[v->id] && data->visited_time[w->id] > data->visited_time[v->id])
+            {
+                // visitar aresta irmã
+            }
+            else if (data->level[w->id] == data->level[v->id] && data->parent[w->id] != data->parent[v->id] && data->visited_time[w->id] > data->visited_time[v->id])
+            {
+                // visitar aresta primo
+            }
+
             node = node->next;
         }
-
     }
-
 }
 
 /**
@@ -247,20 +282,22 @@ void breadth_search (Vertex *vertex_array, list *queue, SearchData_breadth *data
  */
 bool save_graph(Graph *graph)
 {
-	FILE *file;
+    FILE *file;
 
-	file = fopen("list_graph.csv", "w");
+    file = fopen("list_graph.csv", "w");
 
-    unsigned * neigh;
+    unsigned *neigh;
     Vertex *vertex;
 
-    for(unsigned id = 0; id < graph->total_vertex; id++){
+    for (unsigned id = 0; id < graph->total_vertex; id++)
+    {
         neigh = save_vertex_neighbors(graph, id);
         vertex = &graph->vertex_array[id];
 
         fprintf(file, "%i", id);
-        for(int j = 0; j < vertex->degree; j++){
-            fprintf(file, ";%i", neigh[j]);        
+        for (int j = 0; j < vertex->degree; j++)
+        {
+            fprintf(file, ";%i", neigh[j]);
         }
 
         fprintf(file, "\n");
@@ -268,7 +305,7 @@ bool save_graph(Graph *graph)
 
     fclose(file);
 
-	return true;
+    return true;
 }
 
 /**
@@ -278,12 +315,12 @@ bool save_graph(Graph *graph)
  */
 bool is_graph_complete(Graph *graph)
 {
-	if ((graph->degree / (unsigned) 2) == (graph->total_vertex * (graph->total_vertex - 1)) / 2)
-	{
-		return true;
-	}
-	else
-		return false;
+    if ((graph->degree / (unsigned)2) == (graph->total_vertex * (graph->total_vertex - 1)) / 2)
+    {
+        return true;
+    }
+    else
+        return false;
 }
 
 /**
@@ -291,37 +328,136 @@ bool is_graph_complete(Graph *graph)
  *
  * @param graph Grafo a ser analisado.
  */
-unsigned get_graph_degree (Graph *graph) {
+unsigned get_graph_degree(Graph *graph)
+{
     return graph->degree;
 }
-bool is_graph_connect(Graph *graph){
+bool is_graph_connect(Graph *graph)
+{
     SearchData_depth *data = main_depth_search(graph);
 
     unsigned count = 0;
 
-    for(int i =0; i<graph->total_vertex; i++){
-        if(data->parent[i] == -1){
+    for (int i = 0; i < graph->total_vertex; i++)
+    {
+        if (data->parent[i] == -1)
+        {
             count++;
         }
     }
 
-    if(count >1) return false;
+    if (count > 1)
+        return false;
 
     return true;
 }
 
 bool is_graph_regular(Graph *graph)
 {
-	int first_degree = graph->vertex_array[0].degree;
-	int tam = graph->total_vertex;
+    int first_degree = graph->vertex_array[0].degree;
+    int tam = graph->total_vertex;
 
-	for (int i = 1; i < tam; i++)
+    for (int i = 1; i < tam; i++)
+    {
+        if (first_degree != graph->vertex_array[i].degree)
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool checkValidation(unsigned *array, unsigned v)
+{
+    if (array[v] != NULL)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+unsigned *newValidation(unsigned *array, unsigned n, unsigned root)
+{
+    array = malloc(sizeof(unsigned) * n);
+    for (unsigned i = 0; i < n; i++)
+        array[i] = NULL;
+    array[root] = 1;
+    return array;
+}
+
+/**
+ * @brief Retorna os dados de distância e predecessor do caminho mínimo.
+ *
+ * @param graph Grafo a ser analisado.
+ * @param root Raiz do algoritmo, valor negativo pressupõe raiz padrão 0.
+ */
+BellmanData *bellmanFord(Graph *graph, unsigned root)
+{
+
+    if (root < 0)
+    {
+        root = 0;
+    }
+
+    BellmanData *data = malloc(sizeof(BellmanData));
+
+    data->distance = malloc(sizeof(double) * graph->total_vertex);
+    data->predecessor = malloc(sizeof(int) * graph->total_vertex);
+
+    for (unsigned i = 0; i < graph->total_vertex; i++)
+    {
+        data->distance[i] = INFINITY_DOUBLE;
+        data->predecessor[i] = -1;
+    }
+
+    data->distance[root] = 0.0;
+    bool repet = true;
+    unsigned *validationList = newValidation(validationList, graph->total_vertex, root);
+
+    while (repet)
+    {
+        repet = false;
+        for (lnode *i = graph->edges_list->leaf; i != NULL; i = i->previous)
+        {
+            Edge *e = (Edge *)i->obj_struct->obj_addr;
+            if (checkValidation(validationList, e->vertex_left->id))
+            {
+                validationList[e->vertex_right->id] = 1;
+                if (data->distance[e->vertex_right->id] > data->distance[e->vertex_left->id] + e->weight)
+                {
+                    repet = true;
+                    data->distance[e->vertex_right->id] = data->distance[e->vertex_left->id] + e->weight;
+                    data->predecessor[e->vertex_right->id] = e->vertex_left->id;
+                }
+            }
+        }
+    }
+
+    return data;
+}
+
+void bellmanFordforAll(Graph *graph)
+{
+	for (unsigned j = 0; j < graph->total_vertex; j++)
 	{
-		if (first_degree != graph->vertex_array[i].degree)
-		{
-			return false;
-		}
-	}
+		BellmanData *bellman = NULL;
+		bellman = bellmanFord(graph, j);
 
-	return true;
+		printf("Bellman para Vertice de id: %d:\nDistancia: [", j);
+		for (unsigned i = 0; i < graph->total_vertex; i++)
+		{
+			printf(" {%f}", bellman->distance[i]);
+		}
+		printf(" ]");
+		printf("\nPredecessor: [");
+		for (unsigned i = 0; i < graph->total_vertex; i++)
+		{
+			printf(" {%d}", bellman->predecessor[i]);
+		}
+		printf(" ]\n\n\n");
+	}
 }

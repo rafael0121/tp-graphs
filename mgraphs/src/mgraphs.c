@@ -5,6 +5,9 @@
 #include <mgraphs.h>
 #include <queue.h>
 #include <math.h>
+#include <limits.h>
+
+#define INFINITY_DOUBLE INFINITY
 
 /**
  * @brief Cria um grafo e inicializa suas variáveis
@@ -14,13 +17,13 @@
  */
 Graph *graph_create(bool directed, unsigned n)
 {
- 
+
 	Graph *graph = malloc(sizeof(Graph));
 
 	graph->total_vertex = n;
 	graph->total_edge = n * n;
 	graph->directed = directed;
-	
+
 	graph->edge_array = malloc(sizeof(Edge) * graph->total_edge);
 
 	for (int i = 0; i < graph->total_edge; i++)
@@ -35,7 +38,7 @@ Graph *graph_create(bool directed, unsigned n)
 	{
 		graph->vertex_array[i].id = i;
 		graph->vertex_array[i].obj = NULL;
-        graph->vertex_array[i].degree = 0;
+		graph->vertex_array[i].degree = 0;
 	}
 
 	return graph;
@@ -71,7 +74,6 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
 		graph->edge_array[edge_pos2].weight = weight;
 	}
 }
-
 
 void edge_remove(Graph *graph, unsigned id1, unsigned id2)
 {
@@ -225,17 +227,21 @@ SearchData *depth_search_recursive(int id, SearchData *data, int *t, Graph *grap
 	++*t;
 	data->dataTable[0][id] = *t;
 	int *w = vertex_neighbors(id, graph);
-	if(graph->vertex_array[id].degree != 0) {
-		for(int i=0; i<graph->vertex_array[id].degree; i++) {
-			if(data->dataTable[0][w[i]] == 0) {
+	if (graph->vertex_array[id].degree != 0)
+	{
+		for (int i = 0; i < graph->vertex_array[id].degree; i++)
+		{
+			if (data->dataTable[0][w[i]] == 0)
+			{
 				data->dataTable[2][w[i]] = id;
 				data = depth_search_recursive(w[i], data, t, graph, searchId);
 			}
-			if(searchId == id) {
+			if (searchId == id)
+			{
 				data->result = &graph->vertex_array[id];
 			}
 		}
-	}	
+	}
 	++*t;
 	data->dataTable[1][id] = *t;
 	return data;
@@ -247,10 +253,12 @@ SearchData *depth_search_recursive(int id, SearchData *data, int *t, Graph *grap
  * @param id Vértice a ser verificado.
  * @param graph Grafo a ser utilizado.
  */
-int *vertex_neighbors(int id, Graph *graph) {
+int *vertex_neighbors(int id, Graph *graph)
+{
 	int *w = malloc(graph->vertex_array[id].degree * sizeof(int));
-	for(int i=0, j=0; i<graph->total_vertex; i++)
-		if(graph->edge_array[(id * graph->total_vertex) + i].connect == 1) {
+	for (int i = 0, j = 0; i < graph->total_vertex; i++)
+		if (graph->edge_array[(id * graph->total_vertex) + i].connect == 1)
+		{
 			w[j] = i;
 			j++;
 		}
@@ -328,7 +336,8 @@ bool is_graph_regular(Graph *graph)
 	return true;
 }
 
-unsigned graph_degree (Graph *graph) {
+unsigned graph_degree(Graph *graph)
+{
 	return graph->degree;
 }
 
@@ -374,4 +383,89 @@ bool save_graph(Graph *graph)
 
 	fclose(file);
 	return true;
+}
+
+bool checkValidation(unsigned *array, unsigned v) {
+	if(array[v] != NULL) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+unsigned *newValidation(unsigned *array, unsigned n, unsigned root) {
+	array = malloc(sizeof(unsigned)*n); 
+	for(unsigned i = 0; i < n; i++) 
+		array[i] = NULL;
+	array[root] = 1;
+	return array;
+}
+
+BellmanData *bellmanFord(Graph *graph, unsigned root)
+{
+
+	if (root < 0)
+	{
+		root = 0;
+	}
+
+	BellmanData *data = malloc(sizeof(BellmanData));
+
+	data->distance = malloc(sizeof(double) * graph->total_vertex);
+	data->predecessor = malloc(sizeof(int) * graph->total_vertex);
+
+	for (unsigned i = 0; i < graph->total_vertex; i++)
+	{
+		data->distance[i] = INFINITY_DOUBLE;
+		data->predecessor[i] = -1;
+	}
+
+	data->distance[root] = 0.0;
+	bool repet = true;
+	unsigned *validationList = newValidation(validationList, graph->total_vertex, root);
+
+	while (repet)
+	{
+		repet = false;
+		for (int i = 0; i < graph->total_vertex; i++)
+		{
+			for (int j = 0; j < graph->total_vertex; j++)
+			{
+				if (checkValidation(validationList, i) && graph->edge_array[(i * graph->total_vertex) + j].connect == 1)
+				{
+					validationList[j] = 1;
+					if (data->distance[j] > data->distance[i] + graph->edge_array[(i * graph->total_vertex) + j].weight)
+					{
+						repet = true;
+						data->distance[j] = data->distance[i] + graph->edge_array[(i * graph->total_vertex) + j].weight;
+						data->predecessor[j] = i;
+					}
+				}
+			}
+		}
+	}
+
+	return data;
+}
+
+void bellmanFordforAll(Graph *graph)
+{
+	for (unsigned j = 0; j < graph->total_vertex; j++)
+	{
+		BellmanData *bellman = NULL;
+		bellman = bellmanFord(graph, j);
+
+		printf("Bellman para Vertice de id: %d:\nDistancia: [", j);
+		for (unsigned i = 0; i < graph->total_vertex; i++)
+		{
+			printf(" {%f}", bellman->distance[i]);
+		}
+		printf(" ]");
+		printf("\nPredecessor: [");
+		for (unsigned i = 0; i < graph->total_vertex; i++)
+		{
+			printf(" {%d}", bellman->predecessor[i]);
+		}
+		printf(" ]\n\n\n");
+	}
 }
