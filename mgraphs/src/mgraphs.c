@@ -650,6 +650,7 @@ static float calc_heuristic (unsigned src, unsigned targ, int size_plane, unsign
     float euc_dist = sqrt(x+y);
     
     return euc_dist;
+}
 
 ShortestPath * astar (Graph *graph, unsigned src_id, unsigned targ_id, int size_plane, unsigned plane[size_plane][size_plane])
 {
