@@ -13,7 +13,11 @@
         unsigned id; // Identificador do vértice.
         void *obj; // Objeto armazenado no vértice.
         unsigned degree; //grau do vértice.
-        list *edges_incident ; //lista de arestas ligadas ao vértice.
+        /**
+         *  Não direcionado: Arestas incidentes
+         *  Direcionado: Aresta negativa.
+         */
+        list *edges_incident ; 
     }typedef Vertex;
 
     /**
@@ -49,6 +53,12 @@
         unsigned *level;
         int *parent;
     }typedef SearchData_breadth;
+
+    struct {
+        double *distance;
+        int *predecessor;
+    }typedef BellmanData;
+
     //Funções de biblioteca
 
     unsigned vertex_degree (Graph *, unsigned); // Retorna o grau do vértice, recebe o id do vértice.
@@ -69,7 +79,8 @@
 
     SearchData_breadth * main_breadth_search (Graph *); // Realiza uma busca em largura no grafo.
     void breadth_search (Vertex *, list *, SearchData_breadth *, unsigned *); // Realiza uma busca em largura no grafo.
-                                                   //
+    BellmanData * bellmanFord (Graph *, unsigned); //Realiza o algoritmo de Bellman-Ford em um grafo com determinada raiz. 
+    void bellmanFordforAll (Graph *); //Realiza o algoritmo de Bellman-Ford em um grafo com todos os vértices.
     static unsigned real_total_edge(Graph *graph){
         return graph->degree / (unsigned) 2;  
 

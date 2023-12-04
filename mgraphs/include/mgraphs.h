@@ -8,6 +8,7 @@
     #include <stdlib.h>
     #include <stdbool.h>
     #include <math.h>
+    #include <limits.h>
     /**
      * @brief Struct vértice.
      */
@@ -28,35 +29,50 @@
         -> 0: vértices desconectados.
         -> 1: vértices conectados / aresta de saída.
         */
-        double weight; // Peso do vértice
+        float weight; // Peso do vértice
     }typedef Edge;
 
-    /**
-     * @brief Struct grafo.
-     */
-    struct{
-        unsigned degree; // Grau do grafo
-        unsigned total_vertex; // Total de vertíces.
-        unsigned total_edge; // Total de arestas possível na matriz (Incluindo vértices repetidos).
-        bool directed; // Se o grafo é direcionado ou não.
-        Edge *edge_array;
-        Vertex *vertex_array;
-    }typedef Graph;
 
-  /**
-   * @brief Struct de pesquisa em grafo.
-  */
-  struct {
+/**
+ * @brief Struct grafo.
+ */
+struct
+{
+    unsigned degree;       // Grau do grafo
+    unsigned total_vertex; // Total de vertíces.
+    unsigned total_edge;   // Total de arestas possível na matriz (Incluindo vértices repetidos).
+    bool directed;         // Se o grafo é direcionado ou não.
+    Edge *edge_array;
+    Vertex *vertex_array;
+} typedef Graph;
+
+/**
+ * @brief Struct de pesquisa em grafo.
+ */
+struct
+{
     Vertex *result;
     int **dataTable;
-  }typedef SearchData;
+} typedef SearchData;
 
-//Funções de biblioteca
+struct
+{
+    double *distance;
+    int *predecessor;
+} typedef BellmanData;
 
-    unsigned vertex_degree (Graph *, unsigned); // Retorna o grau do vértice, recebe o id do vértice.
-    bool vertex_path_exists (Graph *, unsigned, unsigned); // Retorna se existe um caminho entre 2 vértices.
+// Funções de biblioteca
+    struct {
+        float *dist_array;
+        unsigned src_id;
+        Graph *graph;
+    } typedef ShortestPath;
+    
+  //Funções de biblioteca
 
-    void edge_insert (Graph *, unsigned, unsigned, int); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
+    unsigned vertex_degree(Graph *, unsigned);            // Retorna o grau do vértice, recebe o id do vértice.
+    bool vertex_path_exists(Graph *, unsigned, unsigned); // Retorna se existe um caminho entre 2 vértices.
+    void edge_insert (Graph *, unsigned, unsigned, float); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
     void edge_remove (Graph *, unsigned, unsigned); // Remove uma aresta do grafo, recebe o id de dois vértices.
     unsigned * save_vertex_neighbors (Graph *, unsigned); // Salva o id dos vértices vizinhos do vértice solicitado.
     Graph * graph_create (bool, unsigned); // Cria um novo grafo
@@ -66,15 +82,37 @@
     bool is_graph_complete (Graph *); // Retorna se o grafo é completo.
     bool save_graph(Graph *); // Salva o grafo em um arquivo csv padrão Gephi.
 
-    SearchData * depth_search (Graph *, int); // Realiza uma busca em profundidade no grafo.
-    SearchData * breadth_search (Graph *, int); // Realiza uma busca em largura no grafo e busca por um vértice.
+
+    SearchData *depth_search(Graph *, int);   // Realiza uma busca em profundidade no grafo.
+    SearchData *breadth_search(Graph *, int); // Realiza uma busca em largura no grafo e busca por um vértice.
 
     bool search_lv(SearchData *, int, int *); // Retorna os níveis/td 0 das buscas.
     SearchData *depth_search_recursive(int , SearchData *, int *, Graph *, int); // Chamada recursiva para a busca em profundidade.
     int *vertex_neighbors (int, Graph *g); // Retorna um array com os vizinhos de um vértice.
+    
+    // Deleta o grafo e libera memória
+    int graph_delete (Graph *);
+
 
     static unsigned real_total_edge(Graph *graph){
         return graph->degree / (unsigned) 2;  
     };
+    
+    // Floyd-Warshall
+    ShortestPath * floydwarshall(Graph *graph);
 
+    // A*
+    ShortestPath * astar (Graph *, unsigned, unsigned, int size_plane, unsigned plane[size_plane][size_plane]);
+    ShortestPath * dijkstra (Graph *, unsigned);
+
+    struct vertexpath{
+        int pred;
+        float * dist;
+        bool visited;
+    };
+    
+    // Api para mover no vetor-matriz
+    Edge * get_edge (int , int, Graph *);
+    
+    
 #endif
