@@ -9,6 +9,12 @@
 
 #define INFINITY_DOUBLE INFINITY
 
+/*
+ * #################################################################################
+ * ----------------------- START Basic Graphs Operations ---------------------------
+ * #################################################################################
+ */
+
 /**
  * @brief Cria um grafo e inicializa suas variáveis
  *
@@ -29,7 +35,7 @@ Graph *graph_create(bool directed, unsigned n)
 	for (int i = 0; i < graph->total_edge; i++)
 	{
 		graph->edge_array[i].connect = 0;
-		graph->edge_array[i].weight = 0;
+		graph->edge_array[i].weight = INFINITY;
 	}
 
 	graph->vertex_array = malloc(sizeof(Vertex) * n);
@@ -44,35 +50,35 @@ Graph *graph_create(bool directed, unsigned n)
 	return graph;
 }
 
-void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
+void edge_insert(Graph *graph, unsigned id1, unsigned id2, float weight)
 {
 
 	int edge_pos2 = graph->total_vertex * id1 + id2;
 	int edge_pos1 = graph->total_vertex * id2 + id1;
 
+    
 	if (graph->directed)
 	{
-		graph->edge_array[edge_pos1].connect = -1;
-		graph->edge_array[edge_pos1].weight = weight;
-
 		graph->edge_array[edge_pos2].connect = 1;
-		graph->edge_array[edge_pos2].weight = weight;
-	}
-	else
-	{
-		if (graph->edge_array[edge_pos1].connect == 0)
-		{
-			graph->degree += 2;
-			graph->vertex_array[id1].degree++;
-			graph->vertex_array[id2].degree++;
-		}
 
+		graph->edge_array[edge_pos2].weight = weight;
+
+        graph->degree += 2;
+        graph->vertex_array[id1].degree++;
+
+	} else {
 		graph->edge_array[edge_pos1].connect = 1;
-		graph->edge_array[edge_pos1].weight = weight;
 
 		graph->edge_array[edge_pos2].connect = 1;
+
+		graph->edge_array[edge_pos1].weight = weight;
 		graph->edge_array[edge_pos2].weight = weight;
+        
+        graph->degree += 2;
+        graph->vertex_array[id1].degree++;
+        graph->vertex_array[id2].degree++;
 	}
+    
 }
 
 void edge_remove(Graph *graph, unsigned id1, unsigned id2)
@@ -108,6 +114,162 @@ unsigned vertex_degree(Graph *graph, unsigned id)
 {
 	return graph->vertex_array[id].degree;
 }
+
+/**
+ * @brief Retorna true se o grado passado é conexo e false se não for.
+ *
+ * @param g Grafo a ser analisado.
+ */
+bool is_graph_connect(Graph *g)
+{
+	SearchData *src = breadth_search(g, 0);
+	for (int i = 0; i < g->total_vertex; i++)
+		if (src->dataTable[2][i] == -1)
+			return false;
+
+	return true;
+}
+
+unsigned * save_vertex_neighbors(Graph *graph, unsigned id)
+{
+	unsigned size = graph->vertex_array[id].degree;
+	unsigned *neigh = malloc(sizeof(unsigned) * size);
+
+	int j = 0;
+	for (int i = 0; i < graph->total_vertex; i++)
+	{
+		if (graph->edge_array[(id * graph->total_vertex) + i].connect == 1) 
+		{
+			neigh[j] = i;
+			j++;
+		}
+	}
+
+	return neigh;
+}
+
+bool is_graph_complete(Graph *graph)
+{
+	if (real_total_edge(graph) == (graph->total_vertex * (graph->total_vertex - 1)) / 2)
+	{
+		return true;
+	}
+	else
+		return false;
+}
+
+bool is_graph_regular(Graph *graph)
+{
+	int first_degree = graph->vertex_array[0].degree;
+	int tam = graph->total_vertex;
+
+	for (int i = 1; i < tam; i++)
+	{
+		if (first_degree != graph->vertex_array[i].degree)
+		{
+			return false;
+		}
+	}
+
+	return true;
+}
+
+unsigned graph_degree (Graph *graph) {
+	return graph->degree;
+}
+
+bool save_graph(Graph *graph)
+{
+	FILE *file;
+
+	file = fopen("matrix_graph.csv", "w");
+
+	int aux = graph->total_vertex;
+	int count = 0;
+
+	while (aux > 0)
+	{
+		aux /= 10;
+		count++;
+	}
+	int alg = ceil(log10(graph->total_vertex)) + 1 * sizeof(char);
+
+	char vertex_name[alg];
+
+	for (int i = 0; i < graph->total_vertex; i++)
+	{
+		sprintf(vertex_name, ";V%d", i);
+		fprintf(file, vertex_name);
+	}
+
+	fprintf(file, "\n");
+
+	for (int id = 0; id < graph->total_vertex; id++)
+	{
+		sprintf(vertex_name, "V%d", id);
+		fprintf(file, vertex_name);
+
+		for (int j = 0; j < graph->total_vertex; j++)
+		{
+			char edge_connect[5];
+			sprintf(edge_connect, ";%i", graph->edge_array[(id * graph->total_vertex) + j].connect);
+			fprintf(file, edge_connect);
+		}
+		fprintf(file, "\n");
+	}
+
+	fclose(file);
+	return true;
+}
+
+/**
+ * @brief Retorna aresta correspondente a abstração
+ * de uma matriz com linhas e colunas do vetor de 
+ * arestas.
+ */
+Edge * get_edge (int line, int column, Graph *graph) 
+{
+    unsigned total_vertex = graph->total_vertex;
+
+    if (line >= total_vertex || column >= total_vertex)
+        return NULL;
+
+    int line_pos = line * graph->total_vertex;
+    int column_pos = column;
+
+    return &graph->edge_array[line_pos + column_pos];
+
+}
+
+int graph_delete (Graph *graph)
+{
+    // free vertex objects
+    for (int i = 0; i < graph->total_vertex; i++)
+        free(graph->vertex_array[i].obj);
+    
+    // free vertex array 
+    free(graph->vertex_array);
+    
+    // free edge array 
+    free(graph->edge_array);
+
+    //free graph
+    free(graph);
+
+    return 1;
+};
+
+/*
+ * #################################################################################
+ * ------------------------- END Basic Graphs Operations ---------------------------
+ * #################################################################################
+ */
+
+/*
+ * #################################################################################
+ * ----------------------------- START Breadth Search ------------------------------
+ * #################################################################################
+ */
 
 /**
  * @brief Realiza uma busca em largura no grafo buscando por id de vértice. Retorna uma struct com o vértice solicitado e a tabela gerada pela pesquisa.
@@ -182,6 +344,18 @@ SearchData *breadth_search(Graph *graph, int id)
 	return data;
 }
 
+/*
+ * #################################################################################
+ * ------------------------------ END Breadth Search -------------------------------
+ * #################################################################################
+ */
+
+/*
+ * #################################################################################
+ * ------------------------------ START Deep Search --------------------------------
+ * #################################################################################
+ */
+
 /**
  * @brief Realiza uma busca em profundidade no grafo buscando por id de vértice. Retorna uma struct com o vértice solicitado e a tabela gerada pela pesquisa.
  *
@@ -247,6 +421,20 @@ SearchData *depth_search_recursive(int id, SearchData *data, int *t, Graph *grap
 	return data;
 }
 
+bool search_lv(SearchData *table, int len, int *callback)
+{
+	for (int i = 0; i < len; i++)
+		if (table->dataTable[0][i] == 0)
+		{
+			*callback = i;
+			return true;
+		}
+
+	return false;
+}
+
+
+
 /**
  * @brief Realiza uma busca por todos os vértices vizinhos ao vértice requisitado.
  *
@@ -265,126 +453,304 @@ int *vertex_neighbors(int id, Graph *graph)
 	return w;
 }
 
-/**
- * @brief Retorna true se o grado passado é conexo e false se não for.
- *
- * @param g Grafo a ser analisado.
+/*
+ * #################################################################################
+ * ------------------------------ END Deep Search ----------------------------------
+ * #################################################################################
  */
-bool is_graph_connect(Graph *g)
-{
-	SearchData *src = breadth_search(g, 0);
-	for (int i = 0; i < g->total_vertex; i++)
-		if (src->dataTable[2][i] == -1)
-			return false;
 
-	return true;
+/*
+ * #################################################################################
+ *---------------------------- START Floyd-Warshall --------------------------------
+ * #################################################################################
+*/
+
+/**
+ * @brief Retorna o endereço da posição line x column abstraindo o vetor de distância
+ */
+static float * fwget_dist (int line, int column, float *dist_array, Graph *graph)
+{
+    unsigned total_vertex = graph->total_vertex;
+
+    if (line >= total_vertex || column >= total_vertex)
+        return NULL;
+
+    int line_pos = line * graph->total_vertex;
+    int column_pos = column;
+
+    return &dist_array[line_pos + column_pos];
+
 }
 
-bool search_lv(SearchData *table, int len, int *callback)
-{
-	for (int i = 0; i < len; i++)
-		if (table->dataTable[0][i] == 0)
-		{
-			*callback = i;
-			return true;
-		}
+ShortestPath * floydwarshall(Graph *graph){
+    ShortestPath *path = malloc(sizeof(ShortestPath));   
+    unsigned total_vertex = graph->total_vertex; 
+    unsigned total_edge = graph->total_edge; 
+    float *dist_array = malloc(sizeof(float) * graph->total_edge); 
+    
+    path->graph = graph;
+    path->dist_array = dist_array; 
+    
 
-	return false;
+    for (int i = 0; i < total_edge; i++)
+        dist_array[i] = INFINITY;
+    for (int i = 0; i < total_vertex; i++) {
+        float *dist = fwget_dist (i, i, dist_array, graph);
+        *dist = 0;
+    }
+        
+    for (int line = 0; line < total_vertex; line++) {
+        unsigned *w_array = save_vertex_neighbors(graph, line);
+        for (int column = 0; column < graph->vertex_array[line].degree; column++){
+            unsigned *w = &w_array[column];
+            float * dist = fwget_dist (line, *w, dist_array, graph);
+            *dist = get_edge(line, *w, graph)->weight;
+        }
+    }
+
+    float * direct_dist;
+    float indirect_dist;
+
+    for (int comp = 0; comp < total_vertex; comp++)
+        for (int line = 0; line < total_vertex; line++)
+            for(int column = 0; column < total_vertex; column++){
+                direct_dist = fwget_dist(line, column, dist_array, graph);
+                indirect_dist = *(fwget_dist(line, comp, dist_array, graph)) + *(fwget_dist(comp, column, dist_array, graph));
+                if (*direct_dist > indirect_dist) {
+                    *direct_dist = indirect_dist;
+                }
+            }
+    return path;
 }
+/*
+ * #################################################################################
+ * ---------------------------------- END Floyd-Warshall ---------------------------
+ * #################################################################################
+ */
 
-unsigned *save_vertex_neighbors(Graph *graph, unsigned id)
+/*
+ * #################################################################################
+ * ---------------------------------- START DIJKSTRA ---------------------------
+ * #################################################################################
+ */
+
+ShortestPath * dijkstra (Graph *graph, unsigned src_id){
+    ShortestPath *path = malloc(sizeof(ShortestPath));   
+
+    unsigned total_vertex = graph->total_vertex; 
+    unsigned total_edge = graph->total_edge; 
+
+    float *dist_array = malloc(sizeof(float) * graph->total_vertex); 
+    
+    path->graph = graph;
+    path->dist_array = dist_array; 
+    path->src_id = src_id;
+    
+    
+
+    for (int i = 0; i < total_vertex; i++)
+        dist_array[i] = INFINITY;
+
+    float *dist = &dist_array[src_id];
+    *dist = 0;
+
+    struct vertexpath *varray = malloc(sizeof(struct vertexpath)*total_vertex);
+
+    for (int i = 0; i < total_vertex; i++) {
+        varray[i].pred = -1;
+        varray[i].dist = &dist_array[i];
+        varray[i].visited = false;
+    }
+
+    *varray[src_id].dist = 0;
+    float short_dist;
+    unsigned idshort_dist;
+
+    do{
+        short_dist = INFINITY;
+        int x = -1;
+        for(int i = 0; i < graph->total_vertex; i++) {
+            if(varray[i].visited == false && *varray[i].dist < short_dist){
+                short_dist = *varray[i].dist;
+                x = i;
+            }
+        }
+
+        if(x == -1) break;
+
+        // Visitar vértice x
+        varray[x].visited = true;
+        
+        // Salva vizinhança do vértice x;
+        unsigned *x_neigh = save_vertex_neighbors(graph, x);
+        unsigned y;
+        float src_x_y;
+        for (int i = 0; i < graph->vertex_array[x].degree; i++) {
+            y = x_neigh[i];
+              
+            // se o vértice y não tiver sido visitado ainda
+            if (varray[y].visited == false) {
+                Edge *xy = get_edge(x, y, graph);
+                if (*varray[x].dist == INFINITY) {
+                    src_x_y = *varray[x].dist;
+                } else if (xy->weight == INFINITY) {
+                    src_x_y = xy->weight;
+                } else {
+                    src_x_y = *varray[x].dist + xy->weight;
+                }
+                
+
+                /*
+                 * Se a distância da fonte até y passando por x
+                 * for maior que a distância da fonte até y.
+                 */
+                if (src_x_y < *varray[y].dist) {
+                    *varray[y].dist = src_x_y;
+                    varray[y].pred = x;
+                }
+            }
+        }
+                  
+    }while(true);
+
+    return path;
+};
+
+/*
+ * #################################################################################
+ * ---------------------------------- END DIJKSTRA ---------------------------
+ * #################################################################################
+ */
+
+/*
+ * #################################################################################
+ * ---------------------------------- START A* ---------------------------
+ * #################################################################################
+ */
+
+/*
+ * @brief calcula a distância euclidiana entre o vértice src e o vértice trg.
+ *
+ */
+
+static float calc_heuristic (unsigned src, unsigned targ, int size_plane, unsigned plane[size_plane][size_plane])
 {
-	unsigned size = graph->vertex_array[id].degree;
-	unsigned *neigh = malloc(sizeof(unsigned) * size);
+    int targ_line = targ / size_plane;
+    int targ_colu = targ - plane[targ_line][0];
 
-	int j = 0;
-	for (int i = 0; i < graph->total_vertex; i++)
-	{
-		if (graph->edge_array[(id * graph->total_vertex) + i].connect == 1)
-		{
-			neigh[j] = i;
-			j++;
-		}
-	}
+    int src_line = src / size_plane;
+    int src_colu = src - plane[src_line][0];
+    
+    float x = src_colu - targ_colu;
+    float y = src_line - targ_line;
 
-	return neigh;
-}
+    x*=x;
+    y*=y;
 
-bool is_graph_complete(Graph *graph)
+    float euc_dist = sqrt(x+y);
+    
+    return euc_dist;
+
+ShortestPath * astar (Graph *graph, unsigned src_id, unsigned targ_id, int size_plane, unsigned plane[size_plane][size_plane])
 {
-	if (real_total_edge(graph) == (graph->total_vertex * (graph->total_vertex - 1)) / 2)
-	{
-		return true;
-	}
-	else
-		return false;
-}
+    ShortestPath *path = malloc(sizeof(ShortestPath));   
 
-bool is_graph_regular(Graph *graph)
-{
-	int first_degree = graph->vertex_array[0].degree;
-	int tam = graph->total_vertex;
+    unsigned total_vertex = graph->total_vertex; 
+    unsigned total_edge = graph->total_edge; 
 
-	for (int i = 1; i < tam; i++)
-	{
-		if (first_degree != graph->vertex_array[i].degree)
-		{
-			return false;
-		}
-	}
+    float *dist_array = malloc(sizeof(float) * graph->total_vertex); 
+    
+    path->graph = graph;
+    path->dist_array = dist_array; 
+    path->src_id = src_id;
 
-	return true;
-}
+    for (int i = 0; i < total_vertex; i++)
+        dist_array[i] = INFINITY;
 
-unsigned graph_degree(Graph *graph)
-{
-	return graph->degree;
-}
+    float *dist = &dist_array[src_id];
+    *dist = 0;
 
-bool save_graph(Graph *graph)
-{
-	FILE *file;
+    struct vertexpath *varray = malloc(sizeof(struct vertexpath)*total_vertex);
 
-	file = fopen("matrix_graph.csv", "w");
+    for (int i = 0; i < total_vertex; i++) {
+        varray[i].pred = -1;
+        varray[i].dist = &dist_array[i];
+        varray[i].visited = false;
+    }
 
-	int aux = graph->total_vertex;
-	int count = 0;
+    *varray[src_id].dist = 0;
 
-	while (aux > 0)
-	{
-		aux /= 10;
-		count++;
-	}
-	int alg = ceil(log10(graph->total_vertex)) + 1 * sizeof(char);
+    do{
+        float heuristic = INFINITY;
+        float short_heuristic = INFINITY;
+        float short_dist = INFINITY;
+        int x = -1;
+        for(int i = 0; i < graph->total_vertex; i++) {
 
-	char vertex_name[alg];
+            heuristic = calc_heuristic(i, targ_id, size_plane, plane);
+            
+            if (varray[i].visited == false) {
+                if (*varray[i].dist < short_dist){
+                    if (heuristic < short_heuristic){
+                        short_heuristic = heuristic;
+                        x = i;
+                       
+                    }
+                }
+            }
+        }
 
-	for (int i = 0; i < graph->total_vertex; i++)
-	{
-		sprintf(vertex_name, ";V%d", i);
-		fprintf(file, vertex_name);
-	}
+        if(x == -1) break;
 
-	fprintf(file, "\n");
+        // Visitar vértice x
+        varray[x].visited = true;
+        
+        // Salva vizinhança do vértice x;
+        unsigned *x_neigh = save_vertex_neighbors(graph, x);
+        unsigned y;
+        float src_x_y;
+        for (int i = 0; i < graph->vertex_array[x].degree; i++) {
+            y = x_neigh[i];
+              
+            // se o vértice y não tiver sido visitado ainda
+            if (varray[y].visited == false) {
+                Edge *xy = get_edge(x, y, graph);
+                if (*varray[x].dist == INFINITY) {
+                    src_x_y = *varray[x].dist;
+                } else if (xy->weight == INFINITY) {
+                    src_x_y = xy->weight;
+                } else {
+                    src_x_y = *varray[x].dist + xy->weight;
+                }
+                
 
-	for (int id = 0; id < graph->total_vertex; id++)
-	{
-		sprintf(vertex_name, "V%d", id);
-		fprintf(file, vertex_name);
+                /*
+                 * Se a distância da fonte até y passando por x
+                 * for maior que a distância da fonte até y.
+                 */
+                if (src_x_y < *varray[y].dist) {
+                    *varray[y].dist = src_x_y;
+                    varray[y].pred = x;
+                }
+            }
+        }
 
-		for (int j = 0; j < graph->total_vertex; j++)
-		{
-			char edge_connect[5];
-			sprintf(edge_connect, ";%i", graph->edge_array[(id * graph->total_vertex) + j].connect);
-			fprintf(file, edge_connect);
-		}
-		fprintf(file, "\n");
-	}
+    }while(varray[targ_id].visited == false);
 
-	fclose(file);
-	return true;
-}
+    return path;
+};
+/*
+ * #################################################################################
+ * ---------------------------------- END A* ---------------------------
+ * #################################################################################
+ */
 
+
+/*
+ * #################################################################################
+ * ---------------------------------- START BELLMANFORD ---------------------------
+ * #################################################################################
+ */
 bool checkValidation(unsigned *array, unsigned v) {
 	if(array[v] != NULL) {
 		return true;
@@ -469,3 +835,9 @@ void bellmanFordforAll(Graph *graph)
 		printf(" ]\n\n\n");
 	}
 }
+  
+  /*
+ * #################################################################################
+ * ---------------------------------- END BELLMANFORD ---------------------------
+ * #################################################################################
+ */

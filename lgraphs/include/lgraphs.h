@@ -13,7 +13,11 @@
         unsigned id; // Identificador do vértice.
         void *obj; // Objeto armazenado no vértice.
         unsigned degree; //grau do vértice.
-        list *edges_incident ; //lista de arestas ligadas ao vértice.
+        /**
+         *  Não direcionado: Arestas incidentes
+         *  Direcionado: Aresta negativa.
+         */
+        list *edges_incident ; 
     }typedef Vertex;
 
     /**

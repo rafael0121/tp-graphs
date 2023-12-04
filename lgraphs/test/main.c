@@ -333,6 +333,7 @@ int main()
 
     /*SearchData_depth *data = main_depth_search(graph);
 
+
     for(int i=0;i<graph->total_vertex;i++){
         printf("\n\n\n%i ---------- \n", i);
         printf("End time: %d \n", data->end_time[i]);
