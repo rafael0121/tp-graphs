@@ -52,17 +52,19 @@
     int **dataTable;
   }typedef SearchData;
     
+   
     struct {
         float *dist_array;
+        unsigned src_id;
         Graph *graph;
     } typedef ShortestPath;
-
-//Funções de biblioteca
+    
+  //Funções de biblioteca
 
     unsigned vertex_degree (Graph *, unsigned); // Retorna o grau do vértice, recebe o id do vértice.
     bool vertex_path_exists (Graph *, unsigned, unsigned); // Retorna se existe um caminho entre 2 vértices.
 
-    void edge_insert (Graph *, unsigned, unsigned, int); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
+    void edge_insert (Graph *, unsigned, unsigned, float); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
     void edge_remove (Graph *, unsigned, unsigned); // Remove uma aresta do grafo, recebe o id de dois vértices.
     unsigned * save_vertex_neighbors (Graph *, unsigned); // Salva o id dos vértices vizinhos do vértice solicitado.
     Graph * graph_create (bool, unsigned); // Cria um novo grafo
@@ -78,6 +80,10 @@
     bool search_lv(SearchData *, int, int *); // Retorna os níveis/td 0 das buscas.
     SearchData *depth_search_recursive(int , SearchData *, int *, Graph *, int); // Chamada recursiva para a busca em profundidade.
     int *vertex_neighbors (int, Graph *g); // Retorna um array com os vizinhos de um vértice.
+    
+    // Deleta o grafo e libera memória
+    int graph_delete (Graph *);
+
 
     static unsigned real_total_edge(Graph *graph){
         return graph->degree / (unsigned) 2;  
@@ -86,7 +92,16 @@
     // Floyd-Warshall
     ShortestPath * floydwarshall(Graph *graph);
 
+    // A*
+    ShortestPath * astar (Graph *, unsigned, unsigned, int size_plane, unsigned plane[size_plane][size_plane]);
+    ShortestPath * dijkstra (Graph *, unsigned);
 
+    struct vertexpath{
+        int pred;
+        float * dist;
+        bool visited;
+    };
+    
     // Api para mover no vetor-matriz
     Edge * get_edge (int , int, Graph *);
     

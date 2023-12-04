@@ -47,7 +47,7 @@ Graph *graph_create(bool directed, unsigned n)
 	return graph;
 }
 
-void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
+void edge_insert(Graph *graph, unsigned id1, unsigned id2, float weight)
 {
 
 	int edge_pos2 = graph->total_vertex * id1 + id2;
@@ -58,12 +58,11 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
 	{
 		graph->edge_array[edge_pos2].connect = 1;
 
-		graph->edge_array[edge_pos1].connect = -1;
-
 		graph->edge_array[edge_pos2].weight = weight;
 
         graph->degree += 2;
         graph->vertex_array[id1].degree++;
+
 	} else {
 		graph->edge_array[edge_pos1].connect = 1;
 
@@ -71,7 +70,10 @@ void edge_insert(Graph *graph, unsigned id1, unsigned id2, int weight)
 
 		graph->edge_array[edge_pos1].weight = weight;
 		graph->edge_array[edge_pos2].weight = weight;
-
+        
+        graph->degree += 2;
+        graph->vertex_array[id1].degree++;
+        graph->vertex_array[id2].degree++;
 	}
     
 }
@@ -235,6 +237,24 @@ Edge * get_edge (int line, int column, Graph *graph)
     return &graph->edge_array[line_pos + column_pos];
 
 }
+
+int graph_delete (Graph *graph)
+{
+    // free vertex objects
+    for (int i = 0; i < graph->total_vertex; i++)
+        free(graph->vertex_array[i].obj);
+    
+    // free vertex array 
+    free(graph->vertex_array);
+    
+    // free edge array 
+    free(graph->edge_array);
+
+    //free graph
+    free(graph);
+
+    return 1;
+};
 
 /*
  * #################################################################################
@@ -477,7 +497,6 @@ ShortestPath * floydwarshall(Graph *graph){
             float * dist = fwget_dist (line, *w, dist_array, graph);
             *dist = get_edge(line, *w, graph)->weight;
         }
-            
     }
 
     float * direct_dist;
@@ -497,5 +516,224 @@ ShortestPath * floydwarshall(Graph *graph){
 /*
  * #################################################################################
  * ---------------------------------- END Floyd-Warshall ---------------------------
+ * #################################################################################
+ */
+
+/*
+ * #################################################################################
+ * ---------------------------------- START DIJKSTRA ---------------------------
+ * #################################################################################
+ */
+
+ShortestPath * dijkstra (Graph *graph, unsigned src_id){
+    ShortestPath *path = malloc(sizeof(ShortestPath));   
+
+    unsigned total_vertex = graph->total_vertex; 
+    unsigned total_edge = graph->total_edge; 
+
+    float *dist_array = malloc(sizeof(float) * graph->total_vertex); 
+    
+    path->graph = graph;
+    path->dist_array = dist_array; 
+    path->src_id = src_id;
+    
+    
+
+    for (int i = 0; i < total_vertex; i++)
+        dist_array[i] = INFINITY;
+
+    float *dist = &dist_array[src_id];
+    *dist = 0;
+
+    struct vertexpath *varray = malloc(sizeof(struct vertexpath)*total_vertex);
+
+    for (int i = 0; i < total_vertex; i++) {
+        varray[i].pred = -1;
+        varray[i].dist = &dist_array[i];
+        varray[i].visited = false;
+    }
+
+    *varray[src_id].dist = 0;
+    float short_dist;
+    unsigned idshort_dist;
+
+    do{
+        short_dist = INFINITY;
+        int x = -1;
+        for(int i = 0; i < graph->total_vertex; i++) {
+            if(varray[i].visited == false && *varray[i].dist < short_dist){
+                short_dist = *varray[i].dist;
+                x = i;
+            }
+        }
+
+        if(x == -1) break;
+
+        // Visitar vértice x
+        varray[x].visited = true;
+        
+        // Salva vizinhança do vértice x;
+        unsigned *x_neigh = save_vertex_neighbors(graph, x);
+        unsigned y;
+        float src_x_y;
+        for (int i = 0; i < graph->vertex_array[x].degree; i++) {
+            y = x_neigh[i];
+              
+            // se o vértice y não tiver sido visitado ainda
+            if (varray[y].visited == false) {
+                Edge *xy = get_edge(x, y, graph);
+                if (*varray[x].dist == INFINITY) {
+                    src_x_y = *varray[x].dist;
+                } else if (xy->weight == INFINITY) {
+                    src_x_y = xy->weight;
+                } else {
+                    src_x_y = *varray[x].dist + xy->weight;
+                }
+                
+
+                /*
+                 * Se a distância da fonte até y passando por x
+                 * for maior que a distância da fonte até y.
+                 */
+                if (src_x_y < *varray[y].dist) {
+                    *varray[y].dist = src_x_y;
+                    varray[y].pred = x;
+                }
+            }
+        }
+                  
+    }while(true);
+
+    return path;
+};
+
+/*
+ * #################################################################################
+ * ---------------------------------- END DIJKSTRA ---------------------------
+ * #################################################################################
+ */
+
+/*
+ * #################################################################################
+ * ---------------------------------- START A* ---------------------------
+ * #################################################################################
+ */
+
+/*
+ * @brief calcula a distância euclidiana entre o vértice src e o vértice trg.
+ *
+ */
+
+static float calc_heuristic (unsigned src, unsigned targ, int size_plane, unsigned plane[size_plane][size_plane])
+{
+    int targ_line = targ / size_plane;
+    int targ_colu = targ - plane[targ_line][0];
+
+    int src_line = src / size_plane;
+    int src_colu = src - plane[src_line][0];
+    
+    float x = src_colu - targ_colu;
+    float y = src_line - targ_line;
+
+    x*=x;
+    y*=y;
+
+    float euc_dist = sqrt(x+y);
+    
+    return euc_dist;
+
+}
+
+ShortestPath * astar (Graph *graph, unsigned src_id, unsigned targ_id, int size_plane, unsigned plane[size_plane][size_plane])
+{
+    ShortestPath *path = malloc(sizeof(ShortestPath));   
+
+    unsigned total_vertex = graph->total_vertex; 
+    unsigned total_edge = graph->total_edge; 
+
+    float *dist_array = malloc(sizeof(float) * graph->total_vertex); 
+    
+    path->graph = graph;
+    path->dist_array = dist_array; 
+    path->src_id = src_id;
+
+    for (int i = 0; i < total_vertex; i++)
+        dist_array[i] = INFINITY;
+
+    float *dist = &dist_array[src_id];
+    *dist = 0;
+
+    struct vertexpath *varray = malloc(sizeof(struct vertexpath)*total_vertex);
+
+    for (int i = 0; i < total_vertex; i++) {
+        varray[i].pred = -1;
+        varray[i].dist = &dist_array[i];
+        varray[i].visited = false;
+    }
+
+    *varray[src_id].dist = 0;
+
+    do{
+        float heuristic = INFINITY;
+        float short_heuristic = INFINITY;
+        float short_dist = INFINITY;
+        int x = -1;
+        for(int i = 0; i < graph->total_vertex; i++) {
+
+            heuristic = calc_heuristic(i, targ_id, size_plane, plane);
+            
+            if (varray[i].visited == false) {
+                if (*varray[i].dist < short_dist){
+                    if (heuristic < short_heuristic){
+                        short_heuristic = heuristic;
+                        x = i;
+                       
+                    }
+                }
+            }
+        }
+
+        if(x == -1) break;
+
+        // Visitar vértice x
+        varray[x].visited = true;
+        
+        // Salva vizinhança do vértice x;
+        unsigned *x_neigh = save_vertex_neighbors(graph, x);
+        unsigned y;
+        float src_x_y;
+        for (int i = 0; i < graph->vertex_array[x].degree; i++) {
+            y = x_neigh[i];
+              
+            // se o vértice y não tiver sido visitado ainda
+            if (varray[y].visited == false) {
+                Edge *xy = get_edge(x, y, graph);
+                if (*varray[x].dist == INFINITY) {
+                    src_x_y = *varray[x].dist;
+                } else if (xy->weight == INFINITY) {
+                    src_x_y = xy->weight;
+                } else {
+                    src_x_y = *varray[x].dist + xy->weight;
+                }
+                
+
+                /*
+                 * Se a distância da fonte até y passando por x
+                 * for maior que a distância da fonte até y.
+                 */
+                if (src_x_y < *varray[y].dist) {
+                    *varray[y].dist = src_x_y;
+                    varray[y].pred = x;
+                }
+            }
+        }
+
+    }while(varray[targ_id].visited == false);
+
+    return path;
+};
+/*
+ * #################################################################################
+ * ---------------------------------- END A* ---------------------------
  * #################################################################################
  */

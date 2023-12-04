@@ -2,7 +2,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-
+#include <stdint.h>
+     
 void print_graph(Graph *graph)
 {
     int v;
@@ -84,7 +85,6 @@ void print_graph(Graph *graph)
 	//Print searched vertex and search table;
 
 	SearchData *src = breadth_search(graph, 2);
-
 	printf("\nID: %d\n\n", src->result->id);
 
 	printf("Resultado tabela: \n");
@@ -110,7 +110,7 @@ void print_graph(Graph *graph)
 		printf("[  %d ]", src->dataTable[2][j]);
 	}
 	//----------
-
+   
 	//Print searched vertex and search table with depht;
 
 	SearchData *src2 = depth_search(graph, 2);
@@ -140,7 +140,7 @@ void print_graph(Graph *graph)
 		printf("[  %d ]", src2->dataTable[2][j]);
 	}
 	//----------
-
+    
 	//Print if graph is connect.
 	if(is_graph_connect(graph))
 		printf("\n\nGrafo conexo");
@@ -179,24 +179,102 @@ void print_graph(Graph *graph)
             printf("%.1f | ", path->dist_array[i]);
 
 	}
+    
+    //Print dijkstra.
+	printf("\n\n");
+
+	v = 5;
+
+    path = dijkstra(graph, v);
+
+	printf("     | ");
+	for (int i = 0; i < graph->total_vertex; i++)
+	{
+		printf("V%i  | ", i);
+	}
+	
+	printf("\n V%i  | ", v);
+
+    for (int i = 0; i < graph->total_vertex; i++)
+	{
+            printf("%.1f | ", path->dist_array[i]);
+	}
+    
+    
+}
+
+
+void gen_graph ()
+{
+    clock_t start, end;
+    double cpu_time_used;
+    int m = 3;
+    unsigned n[m][m];
+	Graph *graph = graph_create(true, m*m);
+    
+    int v = 0;
+    //gerar matrix
+    for (int i = 0; i < m; i++){
+        for (int j = 0; j < m; j++){
+            n[i][j] = v;
+            v++;
+        }
+    }
+
+    
+    start = clock();
+    // gerar grafo
+    for(int i = 0; i < m; i++){
+        for(int j = 0; j < m; j++){
+            if (j < m-1) { 
+                edge_insert(graph, n[i][j], n[i][j+1], 1);
+                edge_insert(graph, n[i][j+1], n[i][j], 1);
+            } 
+
+            if (i < m-1) {
+                edge_insert(graph, n[i][j], n[i+1][j], 1);
+                edge_insert(graph, n[i+1][j], n[i][j], 1);
+            }
+        }
+    }
+    end = clock();
+
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("\n\n%f\n", cpu_time_used);
+
+    //Print A*.
+	printf("\n\n");
+
+	unsigned src = 0;
+    unsigned targ = 5;
+
+    ShortestPath *path;
+    path = astar(graph, src, targ, m, n);
+
+	printf("     | ");
+	for (int i = 0; i < graph->total_vertex; i++)
+	{
+		printf("V%i  | ", i);
+	}
+	
+	printf("\n V%i  | ", src);
+
+    for (int i = 0; i < graph->total_vertex; i++)
+	{
+            printf("%.1f | ", path->dist_array[i]);
+	}
+    
+    //print_graph(graph);
 }
 
 int main(){
     srand(time(NULL));
-	unsigned n = 4;
-	Graph *graph = graph_create(true, n);
-	
-    edge_insert(graph, 0, 1, 8); 
-    edge_insert(graph, 0, 2, 8); 
-    edge_insert(graph, 1, 3, 1); 
-    edge_insert(graph, 2, 3, 5); 
-    edge_insert(graph, 2, 1, 2); 
     
+
+
+    gen_graph();
 
     
 
-	print_graph(graph);
     
-    //save_graph(graph);
-
 }
