@@ -394,5 +394,55 @@ int main()
 
     printf("Tempo levado para processar a função: %f segundos\n", tempoTotal);
 
-    printf("\nArestas: %u\n", graph->total_edge);
+    int flag = 0;
+
+    do {
+        // Show menu
+        printf("\nMenu:\n");
+        printf("1. Dijkstra\n");
+        printf("2. Bellman-Ford\n");
+        printf("3. Floyd-Warshall\n");
+        printf("0. Finish\n");
+        printf("Choose an option: ");
+        scanf("%d", &flag);
+
+        //switch case
+        switch (flag) {
+            case 1:
+                printf("Você escolheu a Opção 1.\n");
+                // código Dijkstra
+                break;
+            case 2:
+                printf("Você escolheu a Opção 2.\n");
+                // código Bellman-Ford
+                break;
+            case 3:
+                printf("Você escolheu a Opção 3.\n");
+                // código Floyd-Warshall
+                break;
+            case 0:
+                printf("Leaving the program. See you later!\n");
+                break;
+            default:
+                printf("Invalid option. Try again.\n");
+        }
+
+    } while (flag != 0);
+
+    /*
+    // Marcar o tempo inicial
+    clock_t inicio = clock();
+
+    // Marcar o tempo final
+    clock_t fim = clock();
+
+    // Calcular o tempo decorrido em segundos
+    double tempoDecorrido = ((double)(fim - inicio)) / CLOCKS_PER_SEC;
+
+    // Exibir o tempo decorrido
+    printf("A função levou %.6f segundos para ser executada.\n", tempoDecorrido);
+    */
+
+    save_graph(graph);
+    
 }
