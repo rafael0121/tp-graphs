@@ -85,7 +85,6 @@ void print_graph(Graph *graph)
 	//Print searched vertex and search table;
 
 	SearchData *src = breadth_search(graph, 2);
-   /* 
 	printf("\nID: %d\n\n", src->result->id);
 
 	printf("Resultado tabela: \n");
@@ -110,13 +109,12 @@ void print_graph(Graph *graph)
 	{
 		printf("[  %d ]", src->dataTable[2][j]);
 	}
-    */
 	//----------
    
 	//Print searched vertex and search table with depht;
 
 	SearchData *src2 = depth_search(graph, 2);
-    /*
+
 	printf("\n\nID: %d\n\n", src2->result->id);
 
 	printf("Resultado tabela: \n");
@@ -142,7 +140,7 @@ void print_graph(Graph *graph)
 		printf("[  %d ]", src2->dataTable[2][j]);
 	}
 	//----------
-    */
+    
 	//Print if graph is connect.
 	if(is_graph_connect(graph))
 		printf("\n\nGrafo conexo");
@@ -182,84 +180,91 @@ void print_graph(Graph *graph)
 
 	}
     
+    //Print dijkstra.
 	printf("\n\n");
 
-    path = astar(graph, 0);
+	v = 5;
+
+    path = dijkstra(graph, v);
 
 	printf("     | ");
 	for (int i = 0; i < graph->total_vertex; i++)
 	{
 		printf("V%i  | ", i);
 	}
-	v = 0;
-	for (int i = 0; i < graph->total_edge; i++)
-	{
-		if ((i % graph->total_vertex) == 0)
-			printf("\n V%i  | ", v++);
+	
+	printf("\n V%i  | ", v);
 
+    for (int i = 0; i < graph->total_vertex; i++)
+	{
             printf("%.1f | ", path->dist_array[i]);
 	}
-
+    
+    
 }
 
 
-void test_graph ()
+void gen_graph ()
 {
     clock_t start, end;
     double cpu_time_used;
-
-	Graph *graph = graph_create(true, 10);
+    int m = 3;
+    unsigned n[m][m];
+	Graph *graph = graph_create(true, m*m);
     
-    edge_insert(graph, 0, 4, 2);
-    edge_insert(graph, 0, 2, 9);
-    edge_insert(graph, 0, 3, 5);
-    edge_insert(graph, 2, 1, 9);
-    edge_insert(graph, 2, 7, 7);
-    edge_insert(graph, 4, 7, 1);
-    edge_insert(graph, 7, 5, 9);
-    edge_insert(graph, 5, 7, 8);
-    edge_insert(graph, 7, 6, 6);
-    edge_insert(graph, 6, 7, 7);
-
-    // test floyd-warsall
-    start = clock();
-    floydwarshall(graph);
-    end = clock();
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    printf("\n\n%f\n", cpu_time_used);
-
-    // test Dijkstra
-    start = clock();
-    astar(graph, 0);
-    end = clock();
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    printf("\n\n%f\n", cpu_time_used);
-    
-    print_graph(graph);
-    /*
-    Graph *graph2 = graph_create(true, 1000);
-
-    for (int i = 0; i < 1000; i++)
-    {
-        edge_insert(graph2, (rand() % 100), (rand() % 100), (rand() % 100)); 
+    int v = 0;
+    //gerar matrix
+    for (int i = 0; i < m; i++){
+        for (int j = 0; j < m; j++){
+            n[i][j] = v;
+            v++;
+        }
     }
+
     
-    // test floyd-warsall
     start = clock();
-    floydwarshall(graph2);
+    // gerar grafo
+    for(int i = 0; i < m; i++){
+        for(int j = 0; j < m; j++){
+            if (j < m-1) { 
+                edge_insert(graph, n[i][j], n[i][j+1], 1);
+                edge_insert(graph, n[i][j+1], n[i][j], 1);
+            } 
+
+            if (i < m-1) {
+                edge_insert(graph, n[i][j], n[i+1][j], 1);
+                edge_insert(graph, n[i+1][j], n[i][j], 1);
+            }
+        }
+    }
     end = clock();
+
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("\n\n%f\n", cpu_time_used);
 
-    // test Dijkstra
-    start = clock();
-    astar(graph2, 0);
-    end = clock();
-    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    printf("\n\n%f\n", cpu_time_used);
-    
-    */
+    //Print A*.
+	printf("\n\n");
 
+	unsigned src = 0;
+    unsigned targ = 5;
+
+    ShortestPath *path;
+    path = astar(graph, src, targ, m, n);
+
+	printf("     | ");
+	for (int i = 0; i < graph->total_vertex; i++)
+	{
+		printf("V%i  | ", i);
+	}
+	
+	printf("\n V%i  | ", src);
+
+    for (int i = 0; i < graph->total_vertex; i++)
+	{
+            printf("%.1f | ", path->dist_array[i]);
+	}
+    
+    //print_graph(graph);
 }
 
 int main(){
@@ -267,7 +272,7 @@ int main(){
     
 
 
-    test_graph();
+    gen_graph();
 
     
 

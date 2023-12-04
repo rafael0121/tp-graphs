@@ -55,7 +55,7 @@
    
     struct {
         float *dist_array;
-        unsigned id;
+        unsigned src_id;
         Graph *graph;
     } typedef ShortestPath;
     
@@ -64,7 +64,7 @@
     unsigned vertex_degree (Graph *, unsigned); // Retorna o grau do vértice, recebe o id do vértice.
     bool vertex_path_exists (Graph *, unsigned, unsigned); // Retorna se existe um caminho entre 2 vértices.
 
-    void edge_insert (Graph *, unsigned, unsigned, int); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
+    void edge_insert (Graph *, unsigned, unsigned, float); // Insere uma aresta no grafo, recebe o id de dois vértices e o peso da aresta.
     void edge_remove (Graph *, unsigned, unsigned); // Remove uma aresta do grafo, recebe o id de dois vértices.
     unsigned * save_vertex_neighbors (Graph *, unsigned); // Salva o id dos vértices vizinhos do vértice solicitado.
     Graph * graph_create (bool, unsigned); // Cria um novo grafo
@@ -93,7 +93,8 @@
     ShortestPath * floydwarshall(Graph *graph);
 
     // A*
-    ShortestPath * astar (Graph *, unsigned);
+    ShortestPath * astar (Graph *, unsigned, unsigned, int size_plane, unsigned plane[size_plane][size_plane]);
+    ShortestPath * dijkstra (Graph *, unsigned);
 
     struct vertexpath{
         int pred;

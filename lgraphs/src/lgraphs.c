@@ -325,3 +325,6 @@ bool is_graph_regular(Graph *graph)
 
 	return true;
 }
+
+
+
