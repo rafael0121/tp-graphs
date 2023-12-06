@@ -287,7 +287,7 @@ void run_astar()
         astar(graph, src, targ, m, n);        
         end = clock();
         runtime = (double)(end - start) / CLOCKS_PER_SEC;
-        printf("\n\nTempo total 100: %f segundos\n", runtime);
+        printf("Tempo total 2500: %f segundos\n", runtime);
 
         exit(0);
     }
@@ -331,7 +331,7 @@ void run_astar()
         astar(graph, src, targ, m, n);        
         end = clock();
         runtime = (double)(end - start) / CLOCKS_PER_SEC;
-        printf("\n\nTempo total 100: %f segundos\n", runtime);
+        printf("Tempo total 10.000: %f segundos\n", runtime);
 
         exit(0);
     }

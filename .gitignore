@@ -5,3 +5,5 @@ lib
 bin
 .vscode
 *.csv
+*.bkp
+
